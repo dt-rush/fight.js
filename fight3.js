@@ -141,12 +141,12 @@ function damage(recipient, move) {
   switch (recipient) {
     case "player":
       health[0] -= damage;
-      acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 4));
+      acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 3));
       roundDamage[1] += damage + 1;
       break;
     case "computer":
       health[1] -= damage;
-      acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 4));
+      acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 3));
       roundDamage[0] += damage + 1;
       break;
   }
@@ -320,20 +320,24 @@ function promptUser() {
     let acuityAvg = (acuity[0] + acuity[1])/2;
     acuity[0] = acuityAvg;
     acuity[1] = acuityAvg;
+    health[0] = Math.min(20, health[0] + Math.round(Math.random() * 4));
+    health[1] = Math.min(20, health[1] + Math.round(Math.random() * 4));
     mode = "standing";
     coinFlipInitiative();
   }
 
+  // NOTE: in the below, acuities interpolate toward each other slightly
+  // and 10% of the time get a boost of 10 *or* catch up to the other mostly
   if (initiative === "player") {
     acuity[0] = 0.8 * acuity[0] + 0.2 * acuity[1];
     if (Math.random() < 0.2) {
-      acuity[0] = Math.max(acuity[1], acuity[0] + 10);
+      acuity[0] = Math.round(Math.max(acuity[1] * 0.9, acuity[0] + 10));
     }
     return playerAttack();
   } else {
     acuity[1] = 0.8 * acuity[1] + 0.2 * acuity[0];
     if (Math.random() < 0.2) {
-      acuity[1] = Math.max(acuity[0], acuity[1] + 10);
+      acuity[1] = Math.round(Math.max(acuity[0] * 0.9, acuity[1] + 10));
     }
     return computerAttack();
   }
