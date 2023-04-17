@@ -433,6 +433,9 @@ function playerAttempt(move, initiativeStrike) {
         let blockRate = blockSuccessRate(move);
         if (submissions.includes(move)) {
           blockRate /= (submissionProgress[0] + 1);
+          if (health[1] < 6) {
+            blockRate *= 0.7;
+          }
         }
         block = Math.random() * 100 < (blockRate - acuity[0] + acuity[1]);
         let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 5);
@@ -565,6 +568,9 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
 
     if (submissions.includes(realMove)) {
       blockRate /= (submissionProgress[1] + 1);
+      if (health[0] < 6) {
+        blockRate *= 0.7;
+      }
     }
 
     if (Math.random() * 100 < (blockRate + acuity[0] - acuity[1])) {
