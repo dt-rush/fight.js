@@ -317,16 +317,21 @@ function promptUser() {
       return judgeDecision();
     }
     console.log(`===================== START OF ROUND ${round} ===========================`);
+    let acuityAvg = (acuity[0] + acuity[1])/2;
+    acuity[0] = acuityAvg;
+    acuity[1] = acuityAvg;
     mode = "standing";
     coinFlipInitiative();
   }
 
   if (initiative === "player") {
+    acuity[0] = 0.8 * acuity[0] + 0.2 * acuity[1];
     if (Math.random() < 0.2) {
       acuity[0] = Math.max(acuity[1], acuity[0] + 10);
     }
     return playerAttack();
   } else {
+    acuity[1] = 0.8 * acuity[1] + 0.2 * acuity[0];
     if (Math.random() < 0.2) {
       acuity[1] = Math.max(acuity[0], acuity[1] + 10);
     }
