@@ -272,13 +272,13 @@ function fancyName() {
 //
 
 async function main() {
-  /*
-   * TODO: implement fighter save/load
+  // TODO: implement fighter save/load
   fighterName = await getFighterName("Enter name: ");
   nickName = await getFighterName("Enter nickname: ");
-  */
+  /*
   fighterName = "Ronaldo Guzman";
   nickName = "The Goose";
+  */
 
   return promptUser();
 }
