@@ -1,5 +1,13 @@
 fight3.js output:
 
+fascinating hard-fought battle between apparently equally-matched opponents. 
+
+Guzman wins round 1 with a takedown and more damage. 
+In round 2, both score 1 point of damage on each other, but Computer gets a takedown, winning the round.
+In round 3, computer does just a bit more damage, winning the round.
+
+Even though in the end, computer is *more* damaged, they won R2 and R3, despite the early beating.
+
 ```
 --------
 ===================== START OF ROUND 1 ===========================
