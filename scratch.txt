@@ -1,0 +1,33 @@
+"readjust" is a move, to increase submission chances (if succeeds, maintain initiative)
+
+"feel-out" is a move you can do to increase your block/hit probability on your next move
+    (can maintain initiative)
+    ("feel-out" cannot be meaningfully blocked and just goes through automatically)
+
+
+
+these constants:
+
+```
+const successRate = {
+  "jab": 20,
+  "hook": 30,
+  "uppercut": 40,
+  "body-punch": 25,
+  "body-kick": 35,
+  "leg-kick": 15,
+  "head-kick": 50,
+  "grapple": 45,
+  "smesh": 80,
+  "headbutt-stomach": 75,
+  "knee-to-body": 70,
+  "kimura": 15,
+  "rear-naked-choke": 20,
+  "arm-bar": 10,
+  "triangle-choke": 10,
+  "guillotine": 10
+}
+```
+
+result in a kind of unbalanced play style where the ideal move is to grapple then spam smesh. Can we balance out the probabilities a bit? (submissions should remain as they are, low chance)
+
