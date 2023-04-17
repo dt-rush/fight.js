@@ -117,8 +117,8 @@ let initiative = "player"; // "player" or "computer"
 //
 
 function displayHealth() {
-  console.log(`Player Health: ${health[0]}`);
-  console.log(`Computer Health: ${health[1]}`);
+  console.log(`Player Health: ${health[0]}, \tAcuity: ${acuity[0]}`);
+  console.log(`Computer Health: ${health[1]}, \tAcuity: ${acuity[1]}`);
 }
 
 function coinFlipInitiative() {
@@ -322,8 +322,14 @@ function promptUser() {
   }
 
   if (initiative === "player") {
+    if (Math.random() < 0.2) {
+      acuity[0] = Math.max(acuity[1], acuity[0] + 10);
+    }
     return playerAttack();
   } else {
+    if (Math.random() < 0.2) {
+      acuity[1] = Math.max(acuity[0], acuity[1] + 10);
+    }
     return computerAttack();
   }
 }
@@ -369,8 +375,8 @@ async function playerAttack(initiativeStrike = 1) {
 
   if (move == "feel-out") {
     console.log("You feel out the opponent...");
-    acuity[0] += Math.min(50, Math.floor(Math.random() * 30));
-    if (Math.random() < 0.67) {
+    if (Math.random() < 0.5) {
+      acuity[0] += Math.floor(Math.random() * 10);
       return playerAttack();
     } else {
       initiative = "computer";
@@ -435,7 +441,7 @@ function playerAttempt(move, initiativeStrike) {
           console.log("A truly inspired submission!");
         }
         if (submissions.includes(move)) {
-          return stoppage("player", "submission");
+          return stoppage("player", `submission by ${move}`);
         } else {
           damage("computer", move);
         }
@@ -516,8 +522,8 @@ async function computerAttack(initiativeStrike = 1) {
 
   if (realMove == "feel-out") {
     console.log("The computer feels you out...");
-    acuity[1] += Math.min(50, Math.floor(Math.random() * 30));
-    if (Math.random() < 0.67) {
+    if (Math.random() < 0.5) {
+      acuity[1] += Math.floor(Math.random() * 10);
       return computerAttack();
     } else {
       initiative = "player";
@@ -576,7 +582,7 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
             return computerAttack(initiativeStrike + 1);
           }
           if (mode === "grappling" && submissions.includes(realMove)) {
-            return stoppage("computer", "submission");
+            return stoppage("computer", `submission by ${realMove}`);
           } else {
             damage("player", realMove);
           }
