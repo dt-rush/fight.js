@@ -10,6 +10,7 @@ function askQuestion(query) {
 }
 
 const moves = [
+  "feel-out",
   "jab",
   "hook",
   "uppercut",
@@ -99,8 +100,7 @@ let t = 0;
 let roundTime = 10; // note: not minutes, just moves roughly (modulo initiative chains)
 let nRounds = 3;
 let judgeScores = [[0, 0], [0, 0], [0, 0]];
-let playerRoundDamage = 0;
-let computerRoundDamage = 0;
+let roundDamage = [0, 0];
 
 //
 // combat vars
@@ -108,7 +108,7 @@ let computerRoundDamage = 0;
 
 let mode = "standing";
 let health = [20, 20];
-let acuity = [10, 10];
+let acuity = [50, 50];
 let submissionProgress = [0, 0];
 let initiative = "player"; // "player" or "computer"
 
@@ -141,11 +141,13 @@ function damage(recipient, move) {
   switch (recipient) {
     case "player":
       health[0] -= damage;
-      computerRoundDamage += damage + 1;
+      acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 4));
+      roundDamage[1] += damage + 1;
       break;
     case "computer":
       health[1] -= damage;
-      playerRoundDamage += damage + 1;
+      acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 4));
+      roundDamage[0] += damage + 1;
       break;
   }
 }
@@ -180,12 +182,12 @@ function assignRoundScores() {
   for (let i = 0; i < 3; i++) {
     let playerScore, computerScore;
 
-    if (playerRoundDamage >= computerRoundDamage) {
+    if (roundDamage[0] >= roundDamage[1]) {
       playerScore = 10;
-      computerScore = Math.round((computerRoundDamage / playerRoundDamage) * 10);
+      computerScore = Math.round((roundDamage[1] / roundDamage[0]) * 10);
     } else {
       computerScore = 10;
-      playerScore = Math.round((playerRoundDamage / computerRoundDamage) * 10);
+      playerScore = Math.round((roundDamage[0] / roundDamage[1]) * 10);
     }
 
     // random judge error
@@ -212,8 +214,8 @@ function scoreRound() {
     judgeScores[i][1] += roundScores[i][1];
   }
   // Reset damage counters for the next round
-  playerRoundDamage = 0;
-  computerRoundDamage = 0;
+  roundDamage[0] = 0;
+  roundDamage[1] = 0;
 }
 
 function judgeDecision() {
@@ -344,7 +346,12 @@ async function playerAttack(initiativeStrike = 1) {
     if (breakGrappleAnswer.toLowerCase() === "y") {
       mode = "standing";
       console.log("You broke the grapple!");
-      return playerAttack();
+      if (Math.random() < 0.67) {
+        return playerAttack();
+      } else {
+        initiative = "computer";
+        return computerAttack();
+      }
     }
   }
 
@@ -358,6 +365,17 @@ async function playerAttack(initiativeStrike = 1) {
     move = availableMoves[parseInt(attackChoice) - 1];
   } else if (availableMoves.includes(attackChoice.trim())) {
     move = attackChoice.trim();
+  }
+
+  if (move == "feel-out") {
+    console.log("You feel out the opponent...");
+    acuity[0] += Math.min(50, Math.floor(Math.random() * 30));
+    if (Math.random() < 0.67) {
+      return playerAttack();
+    } else {
+      initiative = "computer";
+      return computerAttack();
+    }
   }
 
   return playerAttempt(move, initiativeStrike);
@@ -375,7 +393,7 @@ function playerAttempt(move, initiativeStrike) {
 
     switch (mode) {
       case "standing":
-        block = (Math.random() * 100) < blockSuccessRate(move);
+        block = (Math.random() * 100) < (blockSuccessRate(move) - acuity[0] + acuity[1]);
         if (block) {
           console.log("They blocked your attack.");
           initiative = "computer";
@@ -383,7 +401,7 @@ function playerAttempt(move, initiativeStrike) {
         }
         if (move === "grapple") {
           console.log(`Takedown by ${fighterName}!`);
-          playerRoundDamage += 5;
+          roundDamage[0] += 5;
           submissionProgress[0] = Math.floor(Math.random() * 2 + Math.random());
           mode = "grappling";
           return playerAttack();
@@ -401,7 +419,7 @@ function playerAttempt(move, initiativeStrike) {
         if (submissions.includes(move)) {
           blockRate /= (submissionProgress[0] + 1);
         }
-        block = Math.random() * 100 < blockRate;
+        block = Math.random() * 100 < (blockRate - acuity[0] + acuity[1]);
         let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 5);
         if (block && !inspiredSubmission) {
           console.log("They blocked your attack.");
@@ -478,14 +496,36 @@ async function computerAttack(initiativeStrike = 1) {
     if (breakGrappleChance) {
       mode = "standing";
       console.log("Computer broke the grapple!");
+      if (Math.random() < 0.67) {
+        return computerAttack();
+      } else {
+        initiative = "player";
+        return playerAttack();
+      }
       return computerAttack();
     }
   }
 
-  console.log(`Computer is attacking in ${mode} mode! Choose a block:`);
-
   const availableMoves = mode === "grappling" ? grappleMoves : moves;
-  const [realMove, computerMoves] = getComputerMove(availableMoves);
+  let [realMove, computerMoves] = getComputerMove(availableMoves);
+
+  // 20% of the time while standing, feel out
+  if (mode == "standing" && Math.random() < 0.20) {
+    realMove = "feel-out";
+  }
+
+  if (realMove == "feel-out") {
+    console.log("The computer feels you out...");
+    acuity[1] += Math.min(50, Math.floor(Math.random() * 30));
+    if (Math.random() < 0.67) {
+      return computerAttack();
+    } else {
+      initiative = "player";
+      return playerAttack();
+    }
+  }
+
+  console.log(`Computer is attacking in ${mode} mode! Choose a block:`);
   console.log(`1: block ${computerMoves[0]}`);
   console.log(`2: block ${computerMoves[1]}`);
   console.log(`3: block ${computerMoves[2]}`);
@@ -512,7 +552,7 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
       blockRate /= (submissionProgress[1] + 1);
     }
 
-    if (Math.random() * 100 < blockRate) {
+    if (Math.random() * 100 < (blockRate + acuity[0] - acuity[1])) {
       console.log(`You successfully blocked '${realMove}'!`);
       initiative = "player";
     } else {
@@ -522,7 +562,7 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
         case "standing":
           if (realMove === "grapple") {
             console.log("Takedown by computer!");
-            computerRoundDamage += 5;
+            roundDamage[1] += 5;
             submissionProgress[1] = Math.floor(Math.random() * 2 + Math.random());
             mode = "grappling";
             return computerAttack();
