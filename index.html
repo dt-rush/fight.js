@@ -17,8 +17,27 @@
 
 
 
-    #vitals {
+    .modal {
       position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal input {
+      font-size: 1.2em;
+      padding: 10px;
+    }
+
+
+
+
+    #vitals {
       top: 0;
       left: 0;
       width: 100%;
@@ -68,36 +87,6 @@
 
 
 
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal input {
-      font-size: 1.2em;
-      padding: 10px;
-    }
-
-
-
-
-    #vitals {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 10%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-    }
-
     #round {
       height: 10%;
       display: flex;
@@ -106,7 +95,6 @@
       font-size: 1.5em;
       font-weight: bold;
       color: black;
-      margin-top: 22%; /* Add margin to the top to create space for #vitals */
     }
 
 
