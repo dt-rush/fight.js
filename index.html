@@ -108,10 +108,10 @@
 
 
     #output {
-      top: 20%; /* Add top to start #output below #vitals */
+      top: 20%; /* Add top to start #output below #vitals and round */
       left: 0;
       width: 100%;
-      height: 40%; /* Adjust height to 60% to account for the space occupied by #vitals */
+      height: 40%;
       scrollbar-width: none; /* Hide scrollbar for Firefox */
 
       display: flex;
@@ -142,7 +142,6 @@
     }
 
     #output .message.buffer {
-      padding: 1em;
       font-weight: bold;
       color: white;
       background-color: black;
@@ -585,7 +584,6 @@
             victory("computer");
           } else {
             writeToOutput("This contest is declared a drawww!", "buffer");
-            rl.close();
           }
         }
 
@@ -606,6 +604,8 @@
           var fancy = firstName + "... '" + nickName;
           if (lastName) {
             fancy += "'... " + lastName + "!!!";
+          } else {
+            fancy += "!!!";
           }
           return fancy;
         }
@@ -630,9 +630,13 @@
         }
 
         main()
-          .then(() => {
-            // TODO
-          });
+        .then(() => {
+          const outputElement = document.getElementById('output');
+          outputElement.style.height = '80%';
+          const optionsElement = document.getElementById('options');
+          optionsElement.style.display = 'none';
+        });
+
 
 
 
