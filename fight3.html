@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fighting Game</title>
+  <style>
+    /* Set the height and width of the HTML and body elements */
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 1.3em;
+    }
+
+
+
+    #vitals {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .vital {
+      font-size: 1.3em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+    }
+
+    .health {
+      background-color: #ffdada;
+      color: red;
+    }
+
+    .acuity {
+      background-color: #dadaff;
+      color: blue;
+    }
+
+    .player-health {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .player-acuity {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .computer-health {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .computer-acuity {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal input {
+      font-size: 1.2em;
+      padding: 10px;
+    }
+
+
+
+
+    #vitals {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    #output {
+      position: fixed;
+      top: 10%; /* Add top to start #output below #vitals */
+      left: 0;
+      width: 100%;
+      height: 60%; /* Adjust height to 60% to account for the space occupied by #vitals */
+      overflow-y: scroll;
+      padding: 1rem;
+      box-sizing: border-box;
+      background-color: #f0f0f0;
+    }
+
+    #options {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      overflow-y: auto;
+      padding: 1rem;
+      box-sizing: border-box;
+      display: grid;
+      gap: 1rem;
+      background-color: #ddd;
+    }
+
+
+
+    .gridList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-gap: 10px;
+    }
+
+    .clickable-option {
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .query {
+      background-color: black;
+      border-radius: 5px;
+      color: white;
+      font-family: monospace;
+      font-weight: bold;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-align: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="vitals"></div>
+  <div id="output"></div>
+  <div id="options"></div>
+
+    <script>
+        //
+        // I/O functions
+        //
+
+        function writeToDiv(text, divId = 'output') {
+          const div = document.getElementById(divId);
+          div.innerHTML += (text || "") + '<br>';
+          div.scrollTop = div.scrollHeight;
+        }
+
+        async function displayClickableDivs(options, query, divId = 'options') {
+          const div = document.getElementById(divId);
+          div.innerHTML = ''; // Clear previous options
+
+          const queryDiv = document.createElement('div');
+          queryDiv.classList.add('query');
+          queryDiv.textContent = query;
+          div.appendChild(queryDiv);
+
+          const gridList = document.createElement('div');
+          gridList.classList.add('gridList');
+          div.appendChild(gridList);
+
+          // Create clickable divs for each option
+          const clickableDivs = options.map((option, index) => {
+            const clickableDiv = document.createElement('div');
+            clickableDiv.textContent = `${option}`;
+            clickableDiv.classList.add('clickable-option');
+            clickableDiv.dataset.value = index + 1;
+            gridList.appendChild(clickableDiv);
+            return clickableDiv;
+          });
+
+          // Return a promise that resolves with the clicked option value
+          return new Promise(resolve => {
+            const onClick = event => {
+              if (event.target.classList.contains('clickable-option')) {
+                const value = event.target.dataset.value;
+                div.removeEventListener('click', onClick); // Remove event listener after a valid click
+                div.innerHTML = '';
+                resolve(value);
+              }
+            };
+
+            div.addEventListener('click', onClick);
+          });
+        }
+
+        function askQuestion(query) {
+          return new Promise(resolve => {
+            // Create modal div
+            const modalDiv = document.createElement('div');
+            modalDiv.classList.add('modal');
+
+            // Create query div and append it to the modal div
+            const queryDiv = document.createElement('div');
+            queryDiv.innerText = query;
+            modalDiv.appendChild(queryDiv);
+
+            // Create text input and append it to the modal div
+            const input = document.createElement('input');
+            input.type = 'text';
+            modalDiv.appendChild(input);
+
+            // Add modal div to the body
+            document.body.appendChild(modalDiv);
+
+            // Set focus on the input
+            input.focus();
+
+            // Handle input submission
+            const onKeyPress = event => {
+              if (event.key === 'Enter') {
+                // Remove event listener and modal div
+                input.removeEventListener('keypress', onKeyPress);
+                document.body.removeChild(modalDiv);
+
+                // Resolve promise with input value
+                resolve(input.value);
+              }
+            };
+
+            // Attach event listener
+            input.addEventListener('keypress', onKeyPress);
+          });
+        }
+    </script>
+    <script>
+
+        const moves = [
+          "feel-out",
+          "jab",
+          "hook",
+          "uppercut",
+          "body-punch",
+          "body-kick",
+          "leg-kick",
+          "head-kick",
+          "grapple"
+        ];
+
+        const grappleMoves = [
+          "progress",
+          "elbow",
+          "smesh",
+          "headbutt-stomach",
+          "knee-to-body",
+          "kimura",
+          "rear-naked-choke",
+          "arm-bar",
+          "triangle-choke",
+          "guillotine"
+        ];
+
+        submissions = ["kimura", "rear-naked-choke", "arm-bar", "triangle-choke", "guillotine"];
+
+        const successRate = {
+          "jab": 45,
+          "elbow": 45,
+          "hook": 45,
+          "uppercut": 45,
+          "body-punch": 45,
+          "body-kick": 55,
+          "leg-kick": 55,
+          "head-kick": 35,
+          "grapple": 45,
+
+          // grapple only
+          "progress": 50,
+          "smesh": 45,
+          "headbutt-stomach": 55,
+          "knee-to-body": 40,
+
+          // submissions
+          "kimura": 15,
+          "rear-naked-choke": 20,
+          "arm-bar": 10,
+          "triangle-choke": 10,
+          "guillotine": 10
+        }
+
+        const damageRate = {
+          "jab": 5,
+          "elbow": 5,
+          "hook": 5,
+          "uppercut": 6,
+          "body-punch": 5,
+          "body-kick": 4,
+          "leg-kick": 4,
+          "head-kick": 6,
+          "smesh": 6,
+          "headbutt-stomach": 1,
+          "knee-to-body": 5,
+        }
+
+        function moveSuccessRate(move) {
+          return successRate[move];
+        }
+
+        function blockSuccessRate(move) {
+          return 100 - successRate[move];
+        }
+
+
+        //
+        // career vars
+        //
+
+        let fighterName = undefined;
+        let nickName = undefined;
+
+        //
+        // contest vars
+        //
+
+        let round = 1;
+        let t = 0;
+        let roundTime = 10; // note: not minutes, just moves roughly (modulo initiative chains)
+        let nRounds = 3;
+        let judgeScores = [[0, 0], [0, 0], [0, 0]];
+        let roundDamage = [0, 0];
+
+        //
+        // combat vars
+        //
+
+        let mode = "standing";
+        let health = [20, 20];
+        let acuity = [50, 50];
+        let submissionProgress = [0, 0];
+        let initiative = "player"; // "player" or "computer"
+
+        //
+        // basic utility functions
+        //
+
+        function displayHealth() {
+          const vitalsDiv = document.getElementById('vitals');
+          vitalsDiv.innerHTML = '';
+
+          const playerHealthDiv = document.createElement('div');
+          playerHealthDiv.classList.add('vital', 'health', 'player-health');
+          playerHealthDiv.textContent = `You: ${health[0]}`;
+          vitalsDiv.appendChild(playerHealthDiv);
+
+          const playerAcuityDiv = document.createElement('div');
+          playerAcuityDiv.classList.add('vital', 'acuity', 'player-acuity');
+          playerAcuityDiv.textContent = `${Math.round(acuity[0])}`;
+          vitalsDiv.appendChild(playerAcuityDiv);
+
+          const computerHealthDiv = document.createElement('div');
+          computerHealthDiv.classList.add('vital', 'health', 'computer-health');
+          computerHealthDiv.textContent = `Computer: ${health[1]}`;
+          vitalsDiv.appendChild(computerHealthDiv);
+
+          const computerAcuityDiv = document.createElement('div');
+          computerAcuityDiv.classList.add('vital', 'acuity', 'computer-acuity');
+          computerAcuityDiv.textContent = `${Math.round(acuity[1])}`;
+          vitalsDiv.appendChild(computerAcuityDiv);
+        }
+
+        function coinFlipInitiative() {
+          if (Math.random() > 0.5) {
+            initiative = "computer";
+          } else {
+            initiative = "player";
+          }
+        }
+
+        function rollD6() {
+          return Math.floor(Math.random() * 6) + 1;
+        }
+
+        function damage(recipient, move) {
+          let damage = Math.floor(rollD6() * damageRate[move]/6.0);
+          if (move != "headbutt-stomach" && damage == 0) {
+            damage = 1;
+          }
+          switch (recipient) {
+            case "player":
+              health[0] -= damage;
+              acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 3));
+              roundDamage[1] += damage + 1;
+              break;
+            case "computer":
+              health[1] -= damage;
+              acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 3));
+              roundDamage[0] += damage + 1;
+              break;
+          }
+        }
+
+        async function getFighterName(query) {
+          const name = await askQuestion(query);
+          if (!name) {
+            writeToDiv("Please enter a valid name.");
+            return getFighterName(query);
+          }
+          return name;
+        }
+
+        //
+        // contest result functions
+        //
+
+        function victory(victor) {
+          let victorName = undefined;
+          if (victor == "player") {
+            victorName = fancyName();
+          } else {
+            victorName = "Computer ... 'The Computer' ... Computer!!!";
+          }
+          victorName = victorName.toUpperCase();
+          writeToDiv(`... declaring the winner... your NEW... Light Heavyweight Champion of the Woooooorrrld!!!! ${victorName}`);
+          rl.close();
+        }
+
+        function assignRoundScores() {
+          const scores = [];
+          for (let i = 0; i < 3; i++) {
+            let playerScore, computerScore;
+
+            if (roundDamage[0] >= roundDamage[1]) {
+              playerScore = 10;
+              computerScore = Math.round((roundDamage[1] / roundDamage[0]) * 10);
+            } else {
+              computerScore = 10;
+              playerScore = Math.round((roundDamage[0] / roundDamage[1]) * 10);
+            }
+
+            // random judge error
+            let playerError = 0;
+            let computerError = 0;
+            // one third chance (expected value one judge has a deviation, but it can be more or 0)
+            if (Math.random() > 0.333) {
+              playerError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
+              computerError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
+            }
+
+            const adjustedPlayerScore = Math.max(Math.min(playerScore + playerError, 10), 0); // Clamp scores between 0 and 10
+            const adjustedComputerScore = Math.max(Math.min(computerScore + computerError, 10), 0); // Clamp scores between 0 and 10
+
+            scores.push([adjustedPlayerScore, adjustedComputerScore]);
+          }
+          return scores;
+        }
+
+        function scoreRound() {
+          const roundScores = assignRoundScores();
+          for (let i = 0; i < 3; i++) {
+            judgeScores[i][0] += roundScores[i][0];
+            judgeScores[i][1] += roundScores[i][1];
+          }
+          // Reset damage counters for the next round
+          roundDamage[0] = 0;
+          roundDamage[1] = 0;
+        }
+
+        function judgeDecision() {
+          writeToDiv("[ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [");
+          writeToDiv("[ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [");
+          writeToDiv("[ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [");
+          writeToDiv(`After ${nRounds} rounds, we go to the judge's scorecards...`);
+          let playerTotal = 0;
+          let computerTotal = 0;
+
+          for (let i = 0; i < 3; i++) {
+            writeToDiv(`Judge ${i + 1} scores the contest ${judgeScores[i][0]}, ${judgeScores[i][1]}...`);
+            playerTotal += judgeScores[i][0];
+            computerTotal += judgeScores[i][1];
+          }
+
+          if (playerTotal > computerTotal) {
+            victory("player");
+          } else if (playerTotal < computerTotal) {
+            victory("computer");
+          } else {
+            writeToDiv("This contest is declared a drawwwww!");
+            rl.close();
+          }
+        }
+
+        function stoppage(victor, method) {
+          writeToDiv("[ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [");
+          writeToDiv("[ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [");
+          writeToDiv("[ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [ [");
+          writeToDiv();
+          writeToDiv(`The referee has called a stop to the contest due to ${method} in round ${round}`);
+          writeToDiv();
+          displayHealth();
+          victory(victor);
+        }
+
+        function fancyName() {
+          // Split the fighter name into first and last name
+          var nameParts = fighterName.split(" ");
+          var firstName = nameParts[0];
+          var lastName = nameParts[1];
+
+          // Construct the fancy name
+          var fancy = firstName + "... '" + nickName + "'... " + lastName + "!!!";
+          return fancy;
+        }
+
+
+
+
+        //
+        // main
+        //
+
+        async function main() {
+          // TODO: implement fighter save/load
+          fighterName = await getFighterName("Enter name: ");
+          nickName = await getFighterName("Enter nickname: ");
+          /*
+          fighterName = "Ronaldo Guzman";
+          nickName = "The Goose";
+          */
+
+          return promptUser();
+        }
+
+        main()
+          .then(() => {
+            writeToDiv("GAME END"); rl.close();
+          });
+
+
+
+        //
+        // I/O / decision / fight-logic functions
+        //
+
+        function promptUser() {
+          writeToDiv();
+          writeToDiv("--------");
+
+          if (t == 0 && round == 1) {
+            writeToDiv(`===================== START OF ROUND 1 ===========================`);
+            coinFlipInitiative();
+          }
+
+          t++;
+          if (t == roundTime) {
+            t = 0;
+            writeToDiv();
+            writeToDiv();
+            writeToDiv(`===================== END OF ROUND ${round} =====================`);
+            writeToDiv();
+            displayHealth();
+            scoreRound();
+            round++;
+            if (round > nRounds) {
+              return judgeDecision();
+            }
+            writeToDiv(`===================== START OF ROUND ${round} ===========================`);
+            let acuityAvg = (acuity[0] + acuity[1])/2;
+            acuity[0] = acuityAvg;
+            acuity[1] = acuityAvg;
+            health[0] = Math.min(20, health[0] + Math.round(Math.random() * 4));
+            health[1] = Math.min(20, health[1] + Math.round(Math.random() * 4));
+            mode = "standing";
+            coinFlipInitiative();
+          }
+
+          // NOTE: in the below, acuities interpolate toward each other slightly
+          // and 10% of the time get a boost of 10 *or* catch up to the other mostly
+          if (initiative === "player") {
+            acuity[0] = 0.8 * acuity[0] + 0.2 * acuity[1];
+            if (Math.random() < 0.2) {
+              acuity[0] = Math.round(Math.max(acuity[1] * 0.9, acuity[0] + 10));
+            }
+            return playerAttack();
+          } else {
+            acuity[1] = 0.8 * acuity[1] + 0.2 * acuity[0];
+            if (Math.random() < 0.2) {
+              acuity[1] = Math.round(Math.max(acuity[0] * 0.9, acuity[1] + 10));
+            }
+            return computerAttack();
+          }
+        }
+
+        //
+        // player attack
+        //
+
+        async function playerAttack(initiativeStrike = 1) {
+          if (health[1] <= 0) {
+            return stoppage("player", "TKO");
+          }
+
+          writeToDiv();
+          displayHealth();
+          writeToDiv();
+
+          if (mode === "grappling" && initiativeStrike > 1) {
+            const breakGrappleAnswer = await displayClickableDivs(["y", "n"], "continue grappling?");
+            if (breakGrappleAnswer.toLowerCase() === "y") {
+              mode = "standing";
+              writeToDiv("You broke the grapple!");
+              if (Math.random() < 0.67) {
+                return playerAttack();
+              } else {
+                initiative = "computer";
+                return computerAttack();
+              }
+            }
+          }
+
+          const availableMoves = mode === "grappling" ? grappleMoves : moves;
+
+          const attackChoice = await displayClickableDivs(availableMoves, "your move");
+          let move;
+          if (!isNaN(parseInt(attackChoice)) && parseInt(attackChoice) >= 1 && parseInt(attackChoice) <= availableMoves.length) {
+            move = availableMoves[parseInt(attackChoice) - 1];
+          } else if (availableMoves.includes(attackChoice.trim())) {
+            move = attackChoice.trim();
+          }
+
+          if (move == "feel-out") {
+            writeToDiv("You feel out the opponent...");
+            if (Math.random() < 0.5) {
+              acuity[0] += Math.floor(Math.random() * 10);
+              return playerAttack();
+            } else {
+              initiative = "computer";
+              return computerAttack();
+            }
+          }
+
+          return playerAttempt(move, initiativeStrike);
+        }
+
+        function playerAttempt(move, initiativeStrike) {
+          if (!move) {
+            writeToDiv("Invalid choice! Your attack fails!");
+            initiative = "computer";
+          } else {
+
+            writeToDiv(`You attempted ${move}!`);
+
+            let block;
+
+            switch (mode) {
+              case "standing":
+                block = (Math.random() * 100) < (blockSuccessRate(move) - acuity[0] + acuity[1]);
+                if (block) {
+                  writeToDiv("They blocked your attack.");
+                  initiative = "computer";
+                  return promptUser();
+                }
+                if (move === "grapple") {
+                  writeToDiv(`Takedown by ${fighterName}!`);
+                  roundDamage[0] += 5;
+                  submissionProgress[0] = Math.floor(Math.random() * 2 + Math.random());
+                  mode = "grappling";
+                  return playerAttack();
+                }
+                writeToDiv(`'${move}' connects!`);
+                damage("computer", move);
+                if (health[1] < 6 || (Math.random() * 100) < 37 / initiativeStrike) {
+                  writeToDiv("You maintain the initiative!");
+                  return playerAttack(initiativeStrike + 1);
+                }
+                initiative = "computer";
+                break;
+              case "grappling":
+                let blockRate = blockSuccessRate(move);
+                if (submissions.includes(move)) {
+                  blockRate /= (submissionProgress[0] + 1);
+                  if (health[1] < 6) {
+                    blockRate *= 0.7;
+                  }
+                }
+                block = Math.random() * 100 < (blockRate - acuity[0] + acuity[1]);
+                let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 5);
+                if (block && !inspiredSubmission) {
+                  writeToDiv("They blocked your attack.");
+                  initiative = "computer";
+                  return promptUser();
+                }
+                writeToDiv("Your grapple move is successful!");
+                if (move == "progress") {
+                  submissionProgress[0] += 1;
+                  return playerAttack(initiativeStrike + 1);
+                }
+                if (inspiredSubmission) {
+                  writeToDiv("A truly inspired submission!");
+                }
+                if (submissions.includes(move)) {
+                  return stoppage("player", `submission by ${move}`);
+                } else {
+                  damage("computer", move);
+                }
+                if (health[1] < 6 || Math.random() < (0.70 / initiativeStrike)) {
+                  writeToDiv("You maintain the initiative grappling");
+                  return playerAttack(initiativeStrike + 1);
+                } else {
+                  initiative = "computer";
+                }
+                break;
+            }
+          }
+          return promptUser();
+        }
+
+        //
+        // computer attack
+        //
+
+        function getRandomMove(movesArray) {
+          return movesArray[Math.floor(Math.random() * movesArray.length)];
+        }
+
+        function getComputerMove(movesArray) {
+          // put the real move 1-3 times (TODO: this is telegraphing mechanic. enrich it)
+          const move = getRandomMove(movesArray);
+          const computerMoves = [move];
+          const realRepetition = Math.floor(Math.random() * 3) + 1;
+          for (let i = 1; i < realRepetition; i++) {
+            computerMoves.push(move);
+          }
+          while (computerMoves.length < 3) {
+            const fake = getRandomMove(movesArray);
+            if (!computerMoves.includes(fake)) {
+              computerMoves.push(fake);
+            }
+          }
+          // Permute the computerMoves array
+          for (let i = computerMoves.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [computerMoves[i], computerMoves[j]] = [computerMoves[j], computerMoves[i]];
+          }
+
+          return [move, computerMoves];
+        }
+
+        async function computerAttack(initiativeStrike = 1) {
+          if (health[0] <= 0) {
+            return stoppage("computer", "TKO");
+          }
+
+          writeToDiv();
+          displayHealth();
+          writeToDiv();
+
+          if (mode === "grappling") {
+            const breakGrappleChance = Math.random() < 0.25 || Math.random() < 0.10;
+            if (breakGrappleChance) {
+              mode = "standing";
+              writeToDiv("Computer broke the grapple!");
+              if (Math.random() < 0.67) {
+                return computerAttack();
+              } else {
+                initiative = "player";
+                return playerAttack();
+              }
+              return computerAttack();
+            }
+          }
+
+          const availableMoves = mode === "grappling" ? grappleMoves : moves;
+          let [realMove, computerMoves] = getComputerMove(availableMoves);
+
+          // 20% of the time while standing, feel out
+          if (mode == "standing" && Math.random() < 0.20) {
+            realMove = "feel-out";
+          }
+
+          if (realMove == "feel-out") {
+            writeToDiv("The computer feels you out...");
+            if (Math.random() < 0.5) {
+              acuity[1] += Math.floor(Math.random() * 10);
+              return computerAttack();
+            } else {
+              initiative = "player";
+              return playerAttack();
+            }
+          }
+
+          const blockChoice = await displayClickableDivs(computerMoves, "block");
+          return computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice);
+        }
+
+        function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice) {
+          const userChoice = parseInt(blockChoice);
+          if (userChoice < 1 || userChoice > 3) {
+            writeToDiv(`Invalid choice! Computer attack '${realMove}' goes unblocked!`);
+            damage("player", realMove);
+          } else {
+            const userMove = computerMoves[userChoice - 1];
+            let blockRate = blockSuccessRate(userMove);
+
+            if (userMove === realMove) {
+              // User guessed the real move
+              blockRate *= 1.5;
+            }
+
+            if (submissions.includes(realMove)) {
+              blockRate /= (submissionProgress[1] + 1);
+              if (health[0] < 6) {
+                blockRate *= 0.7;
+              }
+            }
+
+            if (Math.random() * 100 < (blockRate + acuity[0] - acuity[1])) {
+              writeToDiv(`You successfully blocked '${realMove}'!`);
+              initiative = "player";
+            } else {
+              writeToDiv(`You failed to block '${realMove}'!`);
+
+              switch(mode) {
+                case "standing":
+                  if (realMove === "grapple") {
+                    writeToDiv("Takedown by computer!");
+                    roundDamage[1] += 5;
+                    submissionProgress[1] = Math.floor(Math.random() * 2 + Math.random());
+                    mode = "grappling";
+                    return computerAttack();
+                  } else {
+                    damage("player", realMove);
+                  }
+                  break;
+                case "grappling":
+                  if (realMove == "progress") {
+                    submissionProgress[1] += 1;
+                    return computerAttack(initiativeStrike + 1);
+                  }
+                  if (mode === "grappling" && submissions.includes(realMove)) {
+                    return stoppage("computer", `submission by ${realMove}`);
+                  } else {
+                    damage("player", realMove);
+                  }
+                  break;
+              }
+
+              if (health[0] < 6 || (Math.random() * 100) < (70 / initiativeStrike)) {
+                writeToDiv("Computer maintains the initiative!");
+                return computerAttack(initiativeStrike + 1);
+              } else {
+                initiative = "player";
+              }
+            }
+          }
+          return promptUser();
+        }
+    </script>
+</body>
+</html>
