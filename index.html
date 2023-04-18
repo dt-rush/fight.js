@@ -367,7 +367,7 @@
           "grapple": 45,
 
           // grapple only
-          "progress": 50,
+          "progress": 33,
           "smesh": 45,
           "headbutt-stomach": 55,
           "knee-to-body": 40,
@@ -752,7 +752,7 @@
               if (move === "grapple") {
                 writeToOutput(`Takedown by ${fighterName}!`, "player green");
                 roundDamage[0] += 5;
-                submissionProgress[0] = Math.floor(Math.random() * 2 + Math.random());
+                submissionProgress[0] = Math.floor(Math.random() * 2);
                 mode = "grappling";
                 return playerAttack();
               }
@@ -908,7 +908,7 @@
                 if (realMove === "grapple") {
                   writeToOutput("Takedown by computer!", "computer red");
                   roundDamage[1] += 5;
-                  submissionProgress[1] = Math.floor(Math.random() * 2 + Math.random());
+                  submissionProgress[1] = Math.floor(Math.random() * 2);
                   mode = "grappling";
                   return computerAttack();
                 } else {
