@@ -217,14 +217,10 @@
             const modalDiv = document.createElement('div');
             modalDiv.classList.add('modal');
 
-            // Create query div and append it to the modal div
-            const queryDiv = document.createElement('div');
-            queryDiv.innerText = query;
-            modalDiv.appendChild(queryDiv);
-
             // Create text input and append it to the modal div
             const input = document.createElement('input');
             input.type = 'text';
+            input.placeholder = query; // Set the query text as the input placeholder
             modalDiv.appendChild(input);
 
             // Add modal div to the body
