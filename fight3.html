@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      font-size: 1.3em;
+      font-size: 1.1em;
     }
 
 
@@ -104,7 +104,7 @@
       top: 10%; /* Add top to start #output below #vitals */
       left: 0;
       width: 100%;
-      height: 60%; /* Adjust height to 60% to account for the space occupied by #vitals */
+      height: 50%; /* Adjust height to 60% to account for the space occupied by #vitals */
       overflow-y: scroll;
       padding: 1rem;
       box-sizing: border-box;
@@ -116,7 +116,7 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 30%;
+      height: 40%;
       overflow-y: auto;
       padding: 1rem;
       box-sizing: border-box;
@@ -365,22 +365,22 @@
 
           const playerHealthDiv = document.createElement('div');
           playerHealthDiv.classList.add('vital', 'health', 'player-health');
-          playerHealthDiv.textContent = `You: ${health[0]}`;
+          playerHealthDiv.textContent = `You: ❤️ ${health[0]}`;
           vitalsDiv.appendChild(playerHealthDiv);
 
           const playerAcuityDiv = document.createElement('div');
           playerAcuityDiv.classList.add('vital', 'acuity', 'player-acuity');
-          playerAcuityDiv.textContent = `${Math.round(acuity[0])}`;
+          playerAcuityDiv.textContent = `💡${Math.round(acuity[0])}`;
           vitalsDiv.appendChild(playerAcuityDiv);
 
           const computerHealthDiv = document.createElement('div');
           computerHealthDiv.classList.add('vital', 'health', 'computer-health');
-          computerHealthDiv.textContent = `Computer: ${health[1]}`;
+          computerHealthDiv.textContent = `Computer: ❤️ ${health[1]}`;
           vitalsDiv.appendChild(computerHealthDiv);
 
           const computerAcuityDiv = document.createElement('div');
           computerAcuityDiv.classList.add('vital', 'acuity', 'computer-acuity');
-          computerAcuityDiv.textContent = `${Math.round(acuity[1])}`;
+          computerAcuityDiv.textContent = `💡${Math.round(acuity[1])}`;
           vitalsDiv.appendChild(computerAcuityDiv);
         }
 
@@ -437,7 +437,6 @@
           }
           victorName = victorName.toUpperCase();
           writeToDiv(`... declaring the winner... your NEW... Light Heavyweight Champion of the Woooooorrrld!!!! ${victorName}`);
-          rl.close();
         }
 
         function assignRoundScores() {
