@@ -777,12 +777,14 @@
                 }
               }
               block = Math.random() * 100 < (blockRate - acuity[0] + acuity[1]);
-              let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 5);
+              // 3% of the time, an unblockable "inspired" submission
+              let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 3);
               if (block && !inspiredSubmission) {
                 writeToOutput("They blocked your attack.", "computer");
                 initiative = "computer";
                 return promptUser();
               }
+              // below here, block is false 
               writeToOutput(`${move} is successful!`, "player green");
               if (move == "progress") {
                 submissionProgress[0] += 1;
