@@ -122,7 +122,7 @@ function playerAttempt(move, initiativeStrike) {
     case "standing":
       block = (Math.random() * 100) < (blockSuccessRate(move) - acuity[0] + acuity[1]);
       if (block) {
-        writeToOutput("Computer blocked your attack.", "computer");
+        writeToOutput("Computer blocked your attack.", "computer blocked");
         initiative = "computer";
         return promptUser();
       }
@@ -279,7 +279,7 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
 
   writeToOutput(`Computer attemped ${realMove}`, "computer");
   if (Math.random() * 100 < (blockRate + acuity[0] - acuity[1])) {
-    writeToOutput(`You blocked '${realMove}'!`, "player");
+    writeToOutput(`You blocked '${realMove}'!`, "player block");
     initiative = "player";
   } else {
     switch(mode) {

@@ -11,7 +11,7 @@ let nickName = undefined;
 
 let round = 1;
 let t = 0;
-let roundTime = 10; // note: not minutes, just moves roughly (modulo initiative chains)
+let roundTime = 12; // note: not minutes, just increments every time promptUser() is called
 let nRounds = 3;
 let judgeScores = [[0, 0], [0, 0], [0, 0]];
 let roundPoints = [0, 0];

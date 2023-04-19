@@ -137,26 +137,39 @@ html, body {
   display: inline-block;
 }
 
+/* announcer ("buffer") message */
 #output .message.buffer {
   font-weight: bold;
   color: white;
   background-color: black;
 }
 
+/* move blocked message */
+#output .message.block {
+  color: #ccc;
+}
+
+/* any message from the player */
 #output .message.player {
   text-align: right;
 }
+/* a success message for the player */
 #output .message.player.green .pill {
   color: #00CC00;
   background-color: #aaeeaa;
 }
+
+/* any message for the computer */
 #output .message.computer {
   text-align: left;
 }
+/* a failure message for the computer */
 #output .message.computer.red .pill {
   color: #CC0000;
   background-color: #eeaaaa;
 }
+
+/* generic info message eg round start */
 #output .message.info {
   text-align: center;
 }
@@ -164,6 +177,8 @@ html, body {
   border: 1px solid black;
   border-radius: 3px;
 }
+
+/* commentary messages */
 #output .message.commentary {
   text-align: center;
 }
