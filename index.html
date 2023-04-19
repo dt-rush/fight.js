@@ -53,7 +53,7 @@
       height: 10%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
     }
 
     .vital {
@@ -74,25 +74,36 @@
       color: blue;
     }
 
-    .player-health {
+    .player-name {
       grid-column: 1;
       grid-row: 1;
+    }
+    .computer-name {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .player-health {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .computer-health {
+      grid-column: 2;
+      grid-row: 2;
     }
 
     .player-acuity {
       grid-column: 1;
-      grid-row: 2;
+      grid-row: 3;
     }
-
-    .computer-health {
-      grid-column: 2;
-      grid-row: 1;
-    }
-
     .computer-acuity {
       grid-column: 2;
-      grid-row: 2;
+      grid-row: 3;
     }
+
+
+
+    
 
 
 
@@ -372,11 +383,11 @@
           "knee-to-body": 40,
 
           // submissions
-          "kimura": 8,
-          "rear-naked-choke": 12,
-          "arm-bar": 8,
-          "triangle-choke": 8,
-          "guillotine": 8
+          "kimura": 5,
+          "rear-naked-choke": 8,
+          "arm-bar": 5,
+          "triangle-choke": 5,
+          "guillotine": 5
         }
 
         const damageRate = {
@@ -438,9 +449,15 @@
           const vitalsDiv = document.getElementById('vitals');
           vitalsDiv.innerHTML = '';
 
+          // player
+          const playerNameDiv = document.createElement('div');
+          playerNameDiv.classList.add('vital', 'player-name');
+          playerNameDiv.textContent = fighterName;
+          vitalsDiv.appendChild(playerNameDiv);
+
           const playerHealthDiv = document.createElement('div');
           playerHealthDiv.classList.add('vital', 'health', 'player-health');
-          playerHealthDiv.textContent = `You: ❤️ ${health[0]}`;
+          playerHealthDiv.textContent = `❤️ ${health[0]}`;
           vitalsDiv.appendChild(playerHealthDiv);
 
           const playerAcuityDiv = document.createElement('div');
@@ -448,9 +465,15 @@
           playerAcuityDiv.textContent = `💡${Math.round(acuity[0])}`;
           vitalsDiv.appendChild(playerAcuityDiv);
 
+          // computer
+          const computerNameDiv = document.createElement('div');
+          computerNameDiv.classList.add('vital', 'computer-name');
+          computerNameDiv.textContent = "Computer";
+          vitalsDiv.appendChild(computerNameDiv);
+
           const computerHealthDiv = document.createElement('div');
           computerHealthDiv.classList.add('vital', 'health', 'computer-health');
-          computerHealthDiv.textContent = `Computer: ❤️ ${health[1]}`;
+          computerHealthDiv.textContent = `❤️ ${health[1]}`;
           vitalsDiv.appendChild(computerHealthDiv);
 
           const computerAcuityDiv = document.createElement('div');
