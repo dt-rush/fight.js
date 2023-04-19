@@ -2,6 +2,33 @@
 // I/O / decision / fight-logic functions
 //
 
+function recoverBetweenRounds() {
+  // modify acuity
+  let acuityAvg = (acuity[0] + acuity[1])/2;
+  // decay down to avg if below 16 health
+  if (Math.random() < 0.6) {
+    if (health[0] < 16 && acuity[0] > acuityAvg) {
+      acuity[0] = acuityAvg;
+    }
+  }
+  if (Math.random() < 0.6) {
+    if (health[1] < 16 && acuity[1] > acuityAvg) {
+      acuity[1] = acuityAvg;
+    }
+  }
+  // decay up to avg *unless* below 8 health
+  if (health[0] >= 8 && acuity[0] < acuityAvg) {
+    acuity[0] = acuityAvg;
+  }
+  if (health[1] >= 8 && acuity[1] < acuityAvg) {
+    acuity[1] = acuityAvg;
+  }
+
+  // recover some health randomly
+  health[0] = Math.min(20, health[0] + Math.round(Math.random() * 4));
+  health[1] = Math.min(20, health[1] + Math.round(Math.random() * 4));
+}
+
 function promptUser() {
 
   displayRound();
@@ -25,11 +52,9 @@ function promptUser() {
       displayRound();
     }
     writeToOutput(`=== START OF ROUND ${round} ===`);
-    let acuityAvg = (acuity[0] + acuity[1])/2;
-    acuity[0] = acuityAvg;
-    acuity[1] = acuityAvg;
-    health[0] = Math.min(20, health[0] + Math.round(Math.random() * 4));
-    health[1] = Math.min(20, health[1] + Math.round(Math.random() * 4));
+
+    recoverBetweenRounds();
+
     mode = "standing";
     coinFlipInitiative();
   }
@@ -245,8 +270,10 @@ async function computerAttack(initiativeStrike = 1) {
     computerMoves[Math.round(Math.random() * 3)] = "escape";
   }
 
-  // 20% of the time while standing, feel out
-  if (mode == "standing" && Math.random() < 0.20) {
+  // 20% of the time while standing, feel out,
+  // or 70% of the time feel-out if behind by 20 acuity
+  if (mode == "standing" &&
+    (Math.random() < 0.30 || (Math.random() < 0.70 && (acuity[1] - acuity[0]) <= -15))) {
     realMove = "feel-out";
   }
 
