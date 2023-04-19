@@ -1,0 +1,256 @@
+/* Set the height and width of the HTML and body elements */
+html, body {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  font-size: 1.1em;
+}
+
+#content {
+  max-width: 500px; 
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal input {
+  font-size: 1.2em;
+  padding: 10px;
+}
+
+
+
+
+#vitals {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+
+.vital {
+  font-size: 1.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+}
+
+.vital.health {
+  background-color: #ffdada;
+  color: red;
+}
+.vital.acuity {
+  background-color: #dadaff;
+  color: blue;
+}
+.vital.submission {
+  background-color: #fffee6;
+  color: #cda83b;
+}
+
+.vital.playerName {
+  grid-column: 1;
+  grid-row: 1;
+}
+.vital.computerName {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.vital.playerHealth {
+  grid-column: 1;
+  grid-row: 2;
+}
+.vital.computerHealth {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.vital.playerAcuity {
+  grid-column: 1;
+  grid-row: 3;
+}
+.vital.computerAcuity {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.vital.playerSubmission {
+  grid-column: 1;
+  grid-row: 4;
+}
+.vital.computerSubmission {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+
+
+#round {
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: black;
+}
+
+
+#output {
+  top: 20%; /* Add top to start #output below #vitals and round */
+  left: 0;
+  width: 100%;
+  height: 40%;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: scroll;
+  overflow-x: scroll;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+}
+
+#output::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and other WebKit browsers */
+}
+
+#output .message {
+  width: 100%;
+  margin-bottom: 5px;
+}
+#output .message .pill .breakline {
+  width: 100%;
+  background-color: black;
+}
+#output .message .pill {
+  border-radius: 5px;
+  padding: 5px;
+  display: inline-block;
+}
+
+#output .message.buffer {
+  font-weight: bold;
+  color: white;
+  background-color: black;
+}
+
+#output .message.player {
+  text-align: right;
+}
+#output .message.player.green .pill {
+  color: #00CC00;
+  background-color: #aaeeaa;
+}
+#output .message.computer {
+  text-align: left;
+}
+#output .message.computer.red .pill {
+  color: #CC0000;
+  background-color: #eeaaaa;
+}
+#output .message.info {
+  text-align: center;
+}
+#output .message.info .pill {
+  border: 1px solid black;
+  border-radius: 3px;
+}
+#output .message.commentary {
+  text-align: center;
+}
+#output .message.commentary .pill {
+  color: white;
+  background-color: #997766;
+}
+
+.move {
+  padding: 5px;
+  font-weight: bold;
+}
+.move.feelOut {
+  background: #dafafa;
+  color: lightgrey;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+
+
+
+
+
+#options {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  overflow-y: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: #ddd;
+}
+
+#options .grid {
+  display: grid;
+  height: 80%;
+}
+
+#options .grid .gridList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-gap: 10px;
+}
+
+.clickable-option {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  display: table;
+}
+
+.clickable-option .label {
+  display: table-cell;
+  vertical-align: middle;
+  height: 3em;
+}
+
+.query {
+  background-color: black;
+  border-radius: 5px;
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}

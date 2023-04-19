@@ -12,6 +12,7 @@ const moves = [
 
 const grappleMoves = [
   "progress",
+  "escape",
   "elbow",
   "smesh",
   "headbutt-stomach",
@@ -38,6 +39,7 @@ const successRate = {
 
   // grapple only
   "progress": 33,
+  "escape": 37,
   "smesh": 45,
   "headbutt-stomach": 55,
   "knee-to-body": 40,

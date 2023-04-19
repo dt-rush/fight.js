@@ -18,32 +18,37 @@ async function displayClickableDivs(options, query, divId = 'options') {
   queryDiv.textContent = query;
   div.appendChild(queryDiv);
 
+  const grid = document.createElement('div');
+  grid.classList.add('grid');
+  div.appendChild(grid);
+
   const gridList = document.createElement('div');
   gridList.classList.add('gridList');
-  div.appendChild(gridList);
-
-  // Create clickable divs for each option
-  const clickableDivs = options.map((option, index) => {
-    const clickableDiv = document.createElement('div');
-    clickableDiv.textContent = `${option}`;
-    clickableDiv.classList.add('clickable-option');
-    clickableDiv.dataset.value = index + 1;
-    gridList.appendChild(clickableDiv);
-    return clickableDiv;
-  });
+  grid.appendChild(gridList);
 
   // Return a promise that resolves with the clicked option value
   return new Promise(resolve => {
-    const onClick = event => {
-      if (event.target.classList.contains('clickable-option')) {
-        const value = event.target.dataset.value;
-        div.removeEventListener('click', onClick); // Remove event listener after a valid click
-        div.innerHTML = '';
-        resolve(value);
-      }
+    const onOptionClick = event => {
+      const value = event.currentTarget.dataset.value;
+      div.innerHTML = '';
+      resolve(value);
     };
 
-    div.addEventListener('click', onClick);
+    // Create clickable divs for each option
+    options.forEach((option, index) => {
+      const clickableDiv = document.createElement('div');
+      clickableDiv.classList.add('clickable-option');
+      clickableDiv.dataset.value = index + 1;
+
+      const inner = document.createElement('div');
+      inner.classList.add('label');
+      inner.textContent = `${option}`;
+      clickableDiv.appendChild(inner);
+
+      clickableDiv.addEventListener('click', onOptionClick);
+
+      gridList.appendChild(clickableDiv);
+    });
   });
 }
 

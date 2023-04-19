@@ -34,10 +34,6 @@ function promptUser() {
     coinFlipInitiative();
   }
 
-  if (mode == "standing") {
-    submissionProgress = [0, 0];
-  }
-
   // NOTE: in the below, acuities interpolate toward each other slightly
   // and 10% of the time get a boost of 10 *or* catch up to the other mostly
   if (initiative === "player") {
@@ -154,13 +150,8 @@ function playerAttempt(move, initiativeStrike) {
         return playerAttack(initiativeStrike + 1);
       }
       if (move == "escape") {
-        if (submissionProgress[1] == 0) {
-          mode = "standing";
-          return playerAttack();
-        } else {
-          submissionProgress[1] = Math.max(0, submissionProgress[1] - 1);
-          return playerAttack(initiativeStrike);
-        }
+        submissionProgress[1] = Math.max(0, submissionProgress[1] - 1);
+        return playerAttack(initiativeStrike );
       }
       if (inspiredSubmission) {
         writeToOutput("A truly inspired submission!", "commentary");
@@ -219,7 +210,6 @@ async function computerAttack(initiativeStrike = 1) {
 
   displayHealth();
 
-  // TODO: remove, false
   if (mode === "grappling") {
     const breakGrappleChance = Math.random() < 0.25 || Math.random() < 0.10;
     if (breakGrappleChance) {
@@ -238,12 +228,6 @@ async function computerAttack(initiativeStrike = 1) {
 
   const availableMoves = mode === "grappling" ? grappleMoves : moves;
   let [realMove, computerMoves] = getComputerMove(availableMoves);
-
-  // escape override if submission progress
-  if (submissionProgress[0] > 0 && Math.random() < 0.6) {
-    realMove = "escape";
-    computerMoves[Math.round(Math.random() * 3)] = "escape";
-  }
 
   // 20% of the time while standing, feel out
   if (mode == "standing" && Math.random() < 0.20) {
@@ -287,9 +271,10 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
     writeToOutput(`You blocked '${realMove}'!`, "player");
     initiative = "player";
   } else {
+    writeToOutput(`'${realMove}' connects!`, "computer red");
+
     switch(mode) {
       case "standing":
-        writeToOutput(`'${realMove}' connects!`, "computer red");
         if (realMove === "grapple") {
           writeToOutput("Takedown by computer!", "computer red");
           roundPoints[1] += 3;
@@ -301,19 +286,9 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
         }
         break;
       case "grappling":
-        writeToOutput(`'${realMove}' is successful!`, "computer red");
         if (realMove == "progress") {
           submissionProgress[1] += 1;
           return computerAttack(initiativeStrike + 1);
-        }
-        if (realMove == "escape") {
-          if (submissionProgress[0] == 0) {
-            mode = "standing";
-            return computerAttack();
-          } else {
-            submissionProgress[0] = Math.max(0, submissionProgress[0] - 1);
-            return computerAttack(initiativeStrike);
-          }
         }
         if (mode === "grappling" && submissions.includes(realMove)) {
           return stoppage("computer", `submission by ${realMove}`);
