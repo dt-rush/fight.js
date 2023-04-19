@@ -92,11 +92,15 @@ function stoppage(victor, method) {
   victory(victor);
 }
 
+function firstName() {
+  return fighterName.split(" ")[0];
+}
+
 function fancyName() {
   // Split the fighter name into first and last name
   var nameParts = fighterName.split(" ");
-  var firstName = nameParts[0];
-  var lastName = nameParts[1];
+  var firstName = nameParts.shift(); // Removes and returns the first element
+  var lastName = nameParts.join(" "); // Joins the remaining elements with spaces
 
   // Construct the fancy name
   var fancy = firstName + "... '" + nickName;

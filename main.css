@@ -38,84 +38,54 @@ html, body {
 
 
 
-
 #vitals {
   top: 0;
   left: 0;
   width: 100%;
-  height: 10%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .vital {
   font-size: 1.3em;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-family: monospace;
 }
 
-.vital.health {
+#vitals .row.name {
+  color: white;
+  background: black;
+  font-weight: bold;
+}
+
+#vitals .row.name .vital {
+  max-width: 48%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#vitals .row.health {
   background-color: #ffdada;
   color: red;
 }
-.vital.acuity {
+#vitals .row.acuity {
   background-color: #dadaff;
   color: blue;
 }
-.vital.submission {
+#vitals .row.submission {
   background-color: #fffee6;
   color: #cda83b;
-}
-
-.vital.playerName {
-  grid-column: 1;
-  grid-row: 1;
-}
-.vital.computerName {
-  grid-column: 3;
-  grid-row: 1;
-}
-
-.vital.playerHealth {
-  grid-column: 1;
-  grid-row: 2;
-}
-.vital.health.symbol {
-  grid-column: 2;
-  grid-row: 2;
-}
-.vital.computerHealth {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-.vital.playerAcuity {
-  grid-column: 1;
-  grid-row: 3;
-}
-.vital.acuity.symbol {
-  grid-column: 2;
-  grid-row: 3;
-}
-.vital.computerAcuity {
-  grid-column: 3;
-  grid-row: 3;
-}
-
-.vital.playerSubmission {
-  grid-column: 1;
-  grid-row: 4;
-}
-.vital.submission.symbol {
-  grid-column: 2;
-  grid-row: 4;
-}
-.vital.computerSubmission {
-  grid-column: 3;
-  grid-row: 4;
 }
 
 
@@ -132,23 +102,17 @@ html, body {
 
 
 #output {
-  top: 20%; /* Add top to start #output below #vitals and round */
   left: 0;
   width: 100%;
   height: 40%;
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
 
   display: flex;
   flex-direction: column;
 
   overflow-y: scroll;
-  overflow-x: scroll;
+  overflow-x: hide;
   box-sizing: border-box;
   background-color: #f0f0f0;
-}
-
-#output::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for Chrome, Safari, and other WebKit browsers */
 }
 
 #output .message {

@@ -142,7 +142,7 @@ function playerAttempt(move, initiativeStrike) {
         return promptUser();
       }
       if (move === "grapple") {
-        writeToOutput(`Takedown by ${fighterName}!`, "player green");
+        writeToOutput(`Takedown by ${firstName()}!`, "player green");
         roundPoints[0] += 3;
         submissionProgress[0] = Math.floor(Math.random() * 1.1);
         mode = "grappling";

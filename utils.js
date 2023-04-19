@@ -1,69 +1,46 @@
 //
 // basic utility functions
 //
-
 function displayHealth() {
   const vitalsDiv = document.getElementById('vitals');
   vitalsDiv.innerHTML = '';
 
-  // symbols
-  const healthSymbolDiv = document.createElement('div');
-  healthSymbolDiv.classList.add('vital', 'health', 'symbol');
-  healthSymbolDiv.textContent = '❤️';
-  vitalsDiv.appendChild(healthSymbolDiv);
+  const createRow = (classes) => {
+    const row = document.createElement('div');
+    row.classList.add('row', ...classes);
+    return row;
+  };
 
-  const acuitySymbolDiv = document.createElement('div');
-  acuitySymbolDiv.classList.add('vital', 'acuity', 'symbol');
-  acuitySymbolDiv.textContent = '💡';
-  vitalsDiv.appendChild(acuitySymbolDiv);
+  const createVital = (classes, content) => {
+    const vital = document.createElement('div');
+    vital.classList.add('vital', ...classes);
+    vital.textContent = content;
+    return vital;
+  };
 
-  const submissionSymbolDiv = document.createElement('div');
-  submissionSymbolDiv.classList.add('vital', 'submission', 'symbol');
-  submissionSymbolDiv.textContent = '🤼';
-  vitalsDiv.appendChild(submissionSymbolDiv);
+  const row1 = createRow(["name"]);
+  row1.appendChild(createVital(['playerName'], fighterName));
+  row1.appendChild(createVital(['computerName'], 'Computer'));
 
-  // player
-  const playerNameDiv = document.createElement('div');
-  playerNameDiv.classList.add('vital', 'playerName');
-  playerNameDiv.textContent = fighterName;
-  vitalsDiv.appendChild(playerNameDiv);
+  const row2 = createRow(["health"]);
+  row2.appendChild(createVital(['playerHealth'], `${health[0]}`));
+  row2.appendChild(createVital(['symbol'], '❤️'));
+  row2.appendChild(createVital(['computerHealth'], `${health[1]}`));
 
-  const playerHealthDiv = document.createElement('div');
-  playerHealthDiv.classList.add('vital', 'health', 'playerHealth');
-  playerHealthDiv.textContent = `${health[0]}`;
-  vitalsDiv.appendChild(playerHealthDiv);
+  const row3 = createRow(["acuity"]);
+  row3.appendChild(createVital(['playerAcuity'], `${Math.round(acuity[0])}`));
+  row3.appendChild(createVital(['symbol'], '💡'));
+  row3.appendChild(createVital(['computerAcuity'], `${Math.round(acuity[1])}`));
 
-  const playerAcuityDiv = document.createElement('div');
-  playerAcuityDiv.classList.add('vital', 'acuity', 'playerAcuity');
-  playerAcuityDiv.textContent = `${Math.round(acuity[0])}`;
-  vitalsDiv.appendChild(playerAcuityDiv);
+  const row4 = createRow(["submission"]);
+  row4.appendChild(createVital(['playerSubmission'], `${Math.round(submissionProgress[0])}`));
+  row4.appendChild(createVital(['symbol'], '🤼'));
+  row4.appendChild(createVital(['computerSubmission'], `${Math.round(submissionProgress[1])}`));
 
-  const playerSubmissionDiv = document.createElement('div');
-  playerSubmissionDiv.classList.add('vital', 'submission', 'playerSubmission');
-  playerSubmissionDiv.textContent = `${Math.round(submissionProgress[0])}`;
-  vitalsDiv.appendChild(playerSubmissionDiv);
-
-
-  // computer
-  const computerNameDiv = document.createElement('div');
-  computerNameDiv.classList.add('vital', 'computerName');
-  computerNameDiv.textContent = "Computer";
-  vitalsDiv.appendChild(computerNameDiv);
-
-  const computerHealthDiv = document.createElement('div');
-  computerHealthDiv.classList.add('vital', 'health', 'computerHealth');
-  computerHealthDiv.textContent = `${health[1]}`;
-  vitalsDiv.appendChild(computerHealthDiv);
-
-  const computerAcuityDiv = document.createElement('div');
-  computerAcuityDiv.classList.add('vital', 'acuity', 'computerAcuity');
-  computerAcuityDiv.textContent = `${Math.round(acuity[1])}`;
-  vitalsDiv.appendChild(computerAcuityDiv);
-
-  const computerSubmissionDiv = document.createElement('div');
-  computerSubmissionDiv.classList.add('vital', 'submission', 'computerSubmission');
-  computerSubmissionDiv.textContent = `${Math.round(submissionProgress[1])}`;
-  vitalsDiv.appendChild(computerSubmissionDiv);
+  vitalsDiv.appendChild(row1);
+  vitalsDiv.appendChild(row2);
+  vitalsDiv.appendChild(row3);
+  vitalsDiv.appendChild(row4);
 }
 
 function displayRound() {
