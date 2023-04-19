@@ -42,7 +42,7 @@ function promptUser() {
   if (t == roundTime) {
     t = 0;
     writeToOutput(`=== END OF ROUND ${round} ===`);
-    displayHealth();
+    displayVitals();
     scoreRound();
     round++;
     if (round > nRounds) {
@@ -89,7 +89,7 @@ async function playerAttack(initiativeStrike = 1) {
     return stoppage("player", "TKO");
   }
 
-  displayHealth();
+  displayVitals();
 
   if (mode === "grappling" && initiativeStrike > 1) {
     const breakGrappleAnswer = await displayClickableDivs(["y", "n"], "continue grappling?");
@@ -242,7 +242,7 @@ async function computerAttack(initiativeStrike = 1) {
     return stoppage("computer", "TKO");
   }
 
-  displayHealth();
+  displayVitals();
 
   // TODO: remove, false
   if (mode === "grappling") {

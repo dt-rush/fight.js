@@ -1,7 +1,7 @@
 //
 // basic utility functions
 //
-function displayHealth() {
+function displayVitals() {
   const vitalsDiv = document.getElementById('vitals');
   vitalsDiv.innerHTML = '';
 

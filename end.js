@@ -88,7 +88,7 @@ function judgeDecision() {
 function stoppage(victor, method) {
   writeToOutput(`<div class="breakline">-----</div>`);
   writeToOutput(`The referee has called a stop to the contest due to ${method} in round ${round}`, "buffer");
-  displayHealth();
+  displayVitals();
   victory(victor);
 }
 
