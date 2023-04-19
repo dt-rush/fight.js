@@ -82,12 +82,20 @@ function damage(recipient, move) {
     case "player":
       health[0] -= damage;
       acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 3));
-      roundPoints[1] += damage + 1;
+      roundPoints[1] += damage;
+      // default min 1 point except for headbutt-stomach
+      if (move != "headbutt-stomach") {
+        roundPoints[1]++;
+      }
       break;
     case "computer":
       health[1] -= damage;
       acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 3));
-      roundPoints[0] += damage + 1;
+      roundPoints[0] += damage;
+      // default min 1 point except for headbutt-stomach
+      if (move != "headbutt-stomach") {
+        roundPoints[0]++;
+      }
       break;
   }
 }
