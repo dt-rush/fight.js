@@ -91,21 +91,6 @@ async function playerAttack(initiativeStrike = 1) {
 
   displayVitals();
 
-  if (mode === "grappling" && initiativeStrike > 1) {
-    const breakGrappleAnswer = await displayClickableDivs(["y", "n"], "continue grappling?");
-    if (breakGrappleAnswer == 2) {
-      mode = "standing";
-      writeToOutput("You broke the grapple!", "player");
-      submissionProgress = [0, 0];
-      if (Math.random() < 0.67) {
-        return playerAttack();
-      } else {
-        initiative = "computer";
-        return computerAttack();
-      }
-    }
-  }
-
   const availableMoves = mode === "grappling" ? grappleMoves : moves;
 
   const attackChoice = await displayClickableDivs(availableMoves, "your move");
@@ -244,30 +229,13 @@ async function computerAttack(initiativeStrike = 1) {
 
   displayVitals();
 
-  // TODO: remove, false
-  if (mode === "grappling") {
-    const breakGrappleChance = Math.random() < 0.25 || Math.random() < 0.10;
-    if (breakGrappleChance) {
-      mode = "standing";
-      writeToOutput("Computer broke the grapple!", "computer");
-      submissionProgress = [0, 0];
-      if (Math.random() < 0.67) {
-        return computerAttack();
-      } else {
-        initiative = "player";
-        return playerAttack();
-      }
-      return computerAttack();
-    }
-  }
-
   const availableMoves = mode === "grappling" ? grappleMoves : moves;
   let [realMove, computerMoves] = getComputerMove(availableMoves);
 
   // escape override if submission progress
   if (submissionProgress[0] > 0 && Math.random() < 0.6) {
     realMove = "escape";
-    computerMoves[Math.round(Math.random() * 3)] = "escape";
+    computerMoves[Math.round(Math.random() * 2)] = "escape";
   }
 
   // 20% of the time while standing, feel out,
