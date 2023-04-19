@@ -6,6 +6,22 @@ function displayHealth() {
   const vitalsDiv = document.getElementById('vitals');
   vitalsDiv.innerHTML = '';
 
+  // symbols
+  const healthSymbolDiv = document.createElement('div');
+  healthSymbolDiv.classList.add('vital', 'health', 'symbol');
+  healthSymbolDiv.textContent = '❤️';
+  vitalsDiv.appendChild(healthSymbolDiv);
+
+  const acuitySymbolDiv = document.createElement('div');
+  acuitySymbolDiv.classList.add('vital', 'acuity', 'symbol');
+  acuitySymbolDiv.textContent = '💡';
+  vitalsDiv.appendChild(acuitySymbolDiv);
+
+  const submissionSymbolDiv = document.createElement('div');
+  submissionSymbolDiv.classList.add('vital', 'submission', 'symbol');
+  submissionSymbolDiv.textContent = '🤼';
+  vitalsDiv.appendChild(submissionSymbolDiv);
+
   // player
   const playerNameDiv = document.createElement('div');
   playerNameDiv.classList.add('vital', 'playerName');
@@ -14,17 +30,17 @@ function displayHealth() {
 
   const playerHealthDiv = document.createElement('div');
   playerHealthDiv.classList.add('vital', 'health', 'playerHealth');
-  playerHealthDiv.textContent = `❤️ ${health[0]}`;
+  playerHealthDiv.textContent = `${health[0]}`;
   vitalsDiv.appendChild(playerHealthDiv);
 
   const playerAcuityDiv = document.createElement('div');
   playerAcuityDiv.classList.add('vital', 'acuity', 'playerAcuity');
-  playerAcuityDiv.textContent = `💡${Math.round(acuity[0])}`;
+  playerAcuityDiv.textContent = `${Math.round(acuity[0])}`;
   vitalsDiv.appendChild(playerAcuityDiv);
 
   const playerSubmissionDiv = document.createElement('div');
   playerSubmissionDiv.classList.add('vital', 'submission', 'playerSubmission');
-  playerSubmissionDiv.textContent = `🤼${Math.round(submissionProgress[0])}`;
+  playerSubmissionDiv.textContent = `${Math.round(submissionProgress[0])}`;
   vitalsDiv.appendChild(playerSubmissionDiv);
 
 
@@ -36,17 +52,17 @@ function displayHealth() {
 
   const computerHealthDiv = document.createElement('div');
   computerHealthDiv.classList.add('vital', 'health', 'computerHealth');
-  computerHealthDiv.textContent = `❤️ ${health[1]}`;
+  computerHealthDiv.textContent = `${health[1]}`;
   vitalsDiv.appendChild(computerHealthDiv);
 
   const computerAcuityDiv = document.createElement('div');
   computerAcuityDiv.classList.add('vital', 'acuity', 'computerAcuity');
-  computerAcuityDiv.textContent = `💡${Math.round(acuity[1])}`;
+  computerAcuityDiv.textContent = `${Math.round(acuity[1])}`;
   vitalsDiv.appendChild(computerAcuityDiv);
 
   const computerSubmissionDiv = document.createElement('div');
   computerSubmissionDiv.classList.add('vital', 'submission', 'computerSubmission');
-  computerSubmissionDiv.textContent = `🤼${Math.round(submissionProgress[1])}`;
+  computerSubmissionDiv.textContent = `${Math.round(submissionProgress[1])}`;
   vitalsDiv.appendChild(computerSubmissionDiv);
 }
 
