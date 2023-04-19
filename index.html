@@ -541,8 +541,8 @@
             // random judge error
             let playerError = 0;
             let computerError = 0;
-            // one third chance (expected value one judge has a deviation, but it can be more or 0)
-            if (Math.random() > 0.333) {
+            // just less than a third chance (expected value ~0.9 judge has a deviation, but it can be more or 0)
+            if (Math.random() < 0.3) {
               playerError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
               computerError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
             }
