@@ -418,7 +418,7 @@
         let roundTime = 10; // note: not minutes, just moves roughly (modulo initiative chains)
         let nRounds = 3;
         let judgeScores = [[0, 0], [0, 0], [0, 0]];
-        let roundDamage = [0, 0];
+        let roundPoints = [0, 0];
 
         //
         // combat vars
@@ -491,12 +491,12 @@
             case "player":
               health[0] -= damage;
               acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 3));
-              roundDamage[1] += damage + 1;
+              roundPoints[1] += damage + 1;
               break;
             case "computer":
               health[1] -= damage;
               acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 3));
-              roundDamage[0] += damage + 1;
+              roundPoints[0] += damage + 1;
               break;
           }
         }
@@ -530,19 +530,19 @@
           for (let i = 0; i < 3; i++) {
             let playerScore, computerScore;
 
-            if (roundDamage[0] >= roundDamage[1]) {
+            if (roundPoints[0] >= roundPoints[1]) {
               playerScore = 10;
-              computerScore = Math.round((roundDamage[1] / roundDamage[0]) * 10);
+              computerScore = Math.round((roundPoints[1] / roundPoints[0]) * 10);
             } else {
               computerScore = 10;
-              playerScore = Math.round((roundDamage[0] / roundDamage[1]) * 10);
+              playerScore = Math.round((roundPoints[0] / roundPoints[1]) * 10);
             }
 
             // random judge error
             let playerError = 0;
             let computerError = 0;
-            // just less than a third chance (expected value ~0.9 judge has a deviation, but it can be more or 0)
-            if (Math.random() < 0.3) {
+            // 10% chance of error (3 judges, 3 rounds means there will probably be one error)
+            if (Math.random() < 0.1) {
               playerError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
               computerError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
             }
@@ -561,9 +561,9 @@
             judgeScores[i][0] += roundScores[i][0];
             judgeScores[i][1] += roundScores[i][1];
           }
-          // Reset damage counters for the next round
-          roundDamage[0] = 0;
-          roundDamage[1] = 0;
+          // Reset point counters for the next round
+          roundPoints[0] = 0;
+          roundPoints[1] = 0;
         }
 
         function judgeDecision() {
@@ -572,10 +572,20 @@
           let playerTotal = 0;
           let computerTotal = 0;
 
+          // figure out victor
           for (let i = 0; i < 3; i++) {
-            writeToOutput(`Judge ${i + 1} scores the contest ${judgeScores[i][0]}, ${judgeScores[i][1]}...`, "buffer");
             playerTotal += judgeScores[i][0];
             computerTotal += judgeScores[i][1];
+          }
+          let victorIx = (playerTotal > computerTotal) ? 0 : 1;
+          // write scores out (victor number goes first)
+          let displayScores = [];
+          for (let i = 0; i < 3; i++) {
+            displayScores[i] = [
+              judgeScores[i][victorIx],
+              judgeScores[i][(victorIx + 1) % 2],
+            ];
+            writeToOutput(`Judge ${i + 1} scores the contest ${displayScores[i][0]}, ${displayScores[i][1]}...`, "buffer");
           }
 
           if (playerTotal > computerTotal) {
@@ -706,7 +716,7 @@
 
           if (mode === "grappling" && initiativeStrike > 1) {
             const breakGrappleAnswer = await displayClickableDivs(["y", "n"], "continue grappling?");
-            if (breakGrappleAnswer.toLowerCase() === "y") {
+            if (breakGrappleAnswer == 2) {
               mode = "standing";
               writeToOutput("You broke the grapple!", "player");
               if (Math.random() < 0.67) {
@@ -755,7 +765,7 @@
               }
               if (move === "grapple") {
                 writeToOutput(`Takedown by ${fighterName}!`, "player green");
-                roundDamage[0] += 3;
+                roundPoints[0] += 3;
                 submissionProgress[0] = Math.floor(Math.random() * 1.1);
                 mode = "grappling";
                 return playerAttack();
@@ -917,7 +927,7 @@
               case "standing":
                 if (realMove === "grapple") {
                   writeToOutput("Takedown by computer!", "computer red");
-                  roundDamage[1] += 3;
+                  roundPoints[1] += 3;
                   submissionProgress[1] = Math.floor(Math.random() * 1.1);
                   mode = "grappling";
                   return computerAttack();
