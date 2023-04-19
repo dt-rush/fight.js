@@ -52,6 +52,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  position: relative; /* needed to center the symbols */
 }
 
 .vital {
@@ -60,6 +61,13 @@ html, body {
   align-items: center;
   justify-content: flex-start;
   font-family: monospace;
+}
+
+.vital.symbol {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #vitals .row.name {
