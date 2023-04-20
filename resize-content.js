@@ -1,6 +1,6 @@
 function setContentHeight() {
   const contentElement = document.getElementById('content');
-  contentElement.style.height = window.innerHeight + 'px';
+  contentElement.style.height = Math.min(800, window.innerHeight) + 'px';
 }
 
 window.addEventListener('resize', setContentHeight);
