@@ -30,6 +30,12 @@ function recoverBetweenRounds() {
 }
 
 function promptUser() {
+  if (health[0] <= 0) {
+    return stoppage("computer", "TKO");
+  }
+  if (health[1] <= 0) {
+    return stoppage("player", "TKO");
+  }
 
   displayRound();
 
@@ -91,7 +97,15 @@ async function playerAttack(initiativeStrike = 1) {
 
   displayVitals();
 
-  const availableMoves = mode === "grappling" ? grappleMoves : moves;
+  let availableMoves = [];
+  if (mode === "standing") {
+    availableMoves = [...standingMoves];
+  } else if (mode === "grappling") {
+    availableMoves = [...grapplingMoves];
+    if (submissionProgress[0] > 0) {
+      availableMoves = availableMoves.concat(submissions);
+    }
+  }
 
   const attackChoice = await displayClickableDivs(availableMoves, "your move");
   let move;
@@ -229,7 +243,16 @@ async function computerAttack(initiativeStrike = 1) {
 
   displayVitals();
 
-  const availableMoves = mode === "grappling" ? grappleMoves : moves;
+  let availableMoves = [];
+  if (mode === "standing") {
+    availableMoves = [...standingMoves];
+  } else if (mode === "grappling") {
+    availableMoves = [...grapplingMoves];
+    if (submissionProgress[1] > 0) {
+      availableMoves = availableMoves.concat(submissions);
+    }
+  }
+
   let [realMove, computerMoves] = getComputerMove(availableMoves);
 
   // escape override if submission progress

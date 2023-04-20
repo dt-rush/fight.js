@@ -1,4 +1,4 @@
-const moves = [
+const standingMoves = [
   "feel-out",
   "jab",
   "hook",
@@ -10,21 +10,22 @@ const moves = [
   "grapple"
 ];
 
-const grappleMoves = [
+const grapplingMoves = [
   "progress",
   "escape",
   "elbow",
   "smesh",
   "headbutt-stomach",
   "knee-to-body",
-  "kimura",
-  "rear-naked-choke",
-  "arm-bar",
+];
+
+submissions = [
+  "kimura", 
+  "rear-naked-choke", 
+  "arm-bar", 
   "triangle-choke",
   "guillotine"
 ];
-
-submissions = ["kimura", "rear-naked-choke", "arm-bar", "triangle-choke", "guillotine"];
 
 const successRate = {
   "jab": 45,
