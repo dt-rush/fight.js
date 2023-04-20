@@ -10,6 +10,8 @@ async function main() {
           fighterName = "Ronaldo Guzman";
           nickName = "The Goose";
           */
+  displayVitals();
+  displayRound();
   window.scrollTo(0, 0);
   return promptUser();
 }
