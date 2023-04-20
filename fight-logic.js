@@ -102,7 +102,10 @@ async function playerAttack(initiativeStrike = 1) {
     availableMoves = [...standingMoves];
   } else if (mode === "grappling") {
     availableMoves = [...grapplingMoves];
-    if (submissionProgress[0] > 0) {
+    // in order to be able to try a submission you have to have some submissionProgress
+    // *or* 10% of the time, you can seize a wild opportunity knowing it's a long shot
+    // statistics-wise (submission progress changes submission probability)
+    if (submissionProgress[0] > 0 || Math.random() < 0.10) {
       availableMoves = availableMoves.concat(submissions);
     }
   }
@@ -248,7 +251,10 @@ async function computerAttack(initiativeStrike = 1) {
     availableMoves = [...standingMoves];
   } else if (mode === "grappling") {
     availableMoves = [...grapplingMoves];
-    if (submissionProgress[1] > 0) {
+    // in order to be able to try a submission you have to have some submissionProgress
+    // *or* 10% of the time, you can seize a wild opportunity knowing it's a long shot
+    // statistics-wise (submission progress changes submission probability)
+    if (submissionProgress[1] > 0 || Math.random() < 0.10) {
       availableMoves = availableMoves.concat(submissions);
     }
   }
