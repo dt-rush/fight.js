@@ -16,8 +16,6 @@ async function main() {
 
 main()
   .then(() => {
-    const outputElement = document.getElementById('output');
-    outputElement.style.height = '80%';
     const optionsElement = document.getElementById('options');
     optionsElement.style.display = 'none';
   });

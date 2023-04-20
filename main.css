@@ -244,15 +244,6 @@ html, body {
   grid-gap: 10px;
 }
 
-/* Media query for small screens */
-@media (max-width: 600px) {
-  #options .grid .gridList {
-    grid-template-columns: repeat(3, 1fr); /* Set the grid to 3 columns on small screens */
-    grid-auto-rows: minmax(1em, 1fr); /* Ensure rows take equal heights within the available space */
-  }
-}
-
-
 
 .clickable-option {
   background-color: #f0f0f0;
