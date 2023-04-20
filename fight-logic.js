@@ -135,7 +135,7 @@ async function playerAttack(initiativeStrike = 1) {
 }
 
 function playerAttempt(move, initiativeStrike) {
-  writeToOutput(`${move}`, "player attempt");
+  const attemptMessage = writeToOutput(`${move}`, "player attempt");
   let block;
   switch (mode) {
     case "standing":
@@ -145,6 +145,8 @@ function playerAttempt(move, initiativeStrike) {
         initiative = "computer";
         return promptUser();
       }
+      // if here, it did not block
+      attemptMessage.remove();
       if (move === "grapple") {
         writeToOutput(`Takedown by ${firstName()}!`, "player green");
         roundPoints[0] += 3;
@@ -172,11 +174,12 @@ function playerAttempt(move, initiativeStrike) {
       // 3% of the time, an unblockable "inspired" submission
       let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 3);
       if (block && !inspiredSubmission) {
-        writeToOutput("blocked.", "computer");
+        writeToOutput("blocked.", "computer blocked");
         initiative = "computer";
         return promptUser();
       }
-      // below here, block is false 
+      // if here, it did not block
+      attemptMessage.remove();
       writeToOutput(`${move} is successful!`, "player green");
       if (move == "progress") {
         submissionProgress[0] += 1;
@@ -308,11 +311,12 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
     }
   }
 
-  writeToOutput(`${realMove}`, "computer attempt");
+  const attemptMessage = writeToOutput(`${realMove}`, "computer attempt");
   if (Math.random() * 100 < (blockRate + acuity[0] - acuity[1])) {
     writeToOutput(`blocked.`, "player block");
     initiative = "player";
   } else {
+    attemptMessage.remove();
     switch(mode) {
       case "standing":
         writeToOutput(`'${realMove}' connects!`, "computer red");

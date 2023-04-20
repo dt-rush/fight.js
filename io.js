@@ -2,12 +2,17 @@
 // I/O functions
 //
 
-// who is either "player" or "computer"
 function writeToOutput(text, classes = 'info', divId = 'output') {
   const div = document.getElementById(divId);
-  div.innerHTML += `<div class="message ${classes}"><span class="pill">` + (text || "") + `</div></div>`;
+  const messageDiv = document.createElement('div');
+  classList = classes.split(" ");
+  messageDiv.classList.add('message', ...classList);
+  messageDiv.innerHTML = `<span class="pill">` + (text || "") + `</span>`;
+  div.appendChild(messageDiv);
   div.scrollTop = div.scrollHeight;
+  return messageDiv;
 }
+
 
 async function displayClickableDivs(options, query, divId = 'options') {
   const div = document.getElementById(divId);
