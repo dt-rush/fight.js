@@ -2,6 +2,62 @@
 // I/O functions
 //
 
+function displayVitals() {
+  const vitalsDiv = document.getElementById('vitals');
+  vitalsDiv.innerHTML = '';
+
+  const createRow = (classes) => {
+    const row = document.createElement('div');
+    row.classList.add('row', ...classes);
+    return row;
+  };
+
+  const createVital = (classes, content) => {
+    const vital = document.createElement('div');
+    vital.classList.add('vital', ...classes);
+    vital.textContent = content;
+    return vital;
+  };
+
+  const row1 = createRow(["name"]);
+  let displayName = fighterName;
+  if (displayName.length > 32) {
+    displayName = displayName.substr(0, 32) + "...";
+  }
+  row1.appendChild(createVital(['playerName'], displayName));
+  row1.appendChild(createVital(['computerName'], 'Computer'));
+
+  const row2 = createRow(["health"]);
+  row2.appendChild(createVital(['playerHealth'], `${health[0]}`));
+  row2.appendChild(createVital(['symbol'], '❤️'));
+  row2.appendChild(createVital(['computerHealth'], `${health[1]}`));
+
+  const row3 = createRow(["acuity"]);
+  row3.appendChild(createVital(['playerAcuity'], `${Math.round(acuity[0])}`));
+  row3.appendChild(createVital(['symbol'], '💡'));
+  row3.appendChild(createVital(['computerAcuity'], `${Math.round(acuity[1])}`));
+
+  const row4 = createRow(["submission"]);
+  row4.appendChild(createVital(['playerSubmission'], `${Math.round(submissionProgress[0])}`));
+  row4.appendChild(createVital(['symbol'], '🤼'));
+  row4.appendChild(createVital(['computerSubmission'], `${Math.round(submissionProgress[1])}`));
+
+  vitalsDiv.appendChild(row1);
+  vitalsDiv.appendChild(row2);
+  vitalsDiv.appendChild(row3);
+  vitalsDiv.appendChild(row4);
+}
+
+function displayRound() {
+  const roundDiv = document.getElementById('round');
+  roundDiv.innerHTML = `Round: ${round}`;
+}
+
+function hideRound() {
+  const roundDiv = document.getElementById('round');
+  roundDiv.innerHTML = '';
+}
+
 function writeToOutput(text, classes = 'info', divId = 'output') {
   const div = document.getElementById(divId);
   const messageDiv = document.createElement('div');

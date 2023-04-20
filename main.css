@@ -14,6 +14,8 @@ html, body {
   max-width: 500px; 
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -81,10 +83,14 @@ html, body {
 
 #vitals .row.name .vital {
   max-width: 48%;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
   flex: 1;
+}
+
+#vitals .row.name .vital.computerName {
+  text-align: right;
 }
 
 #vitals .row.health {
@@ -103,7 +109,6 @@ html, body {
 
 
 #round {
-  height: 5%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,8 +128,9 @@ html, body {
 
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
   background-color: #f0f0f0;
@@ -219,7 +225,7 @@ html, body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 40%;
+  height: 30%;
   overflow-y: auto;
   padding: 1rem;
   box-sizing: border-box;
@@ -234,14 +240,24 @@ html, body {
 #options .grid .gridList {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-auto-rows: minmax(1em, auto);
   grid-gap: 10px;
 }
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+  #options .grid .gridList {
+    grid-template-columns: repeat(3, 1fr); /* Set the grid to 3 columns on small screens */
+    grid-auto-rows: minmax(1em, 1fr); /* Ensure rows take equal heights within the available space */
+  }
+}
+
+
 
 .clickable-option {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 10px;
   text-align: center;
   cursor: pointer;
   display: table;
@@ -250,7 +266,6 @@ html, body {
 .clickable-option .label {
   display: table-cell;
   vertical-align: middle;
-  height: 3em;
 }
 
 .query {
@@ -259,7 +274,6 @@ html, body {
   color: white;
   font-family: monospace;
   font-weight: bold;
-  padding: 10px;
   margin-bottom: 10px;
   text-align: center;
   width: 100%;
