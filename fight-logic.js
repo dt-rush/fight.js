@@ -46,21 +46,23 @@ function promptUser() {
 
   t++;
   if (t == roundTime) {
+    // end this round
     t = 0;
     writeToOutput(`=== END OF ROUND ${round} ===`);
     displayVitals();
     scoreRound();
+
+    recoverBetweenRounds();
+    displayVitals();
+    // start of next
     round++;
+    writeToOutput(`=== START OF ROUND ${round} ===`);
     if (round > nRounds) {
       return judgeDecision();
       hideRound();
     } else {
       displayRound();
     }
-    writeToOutput(`=== START OF ROUND ${round} ===`);
-
-    recoverBetweenRounds();
-
     mode = "standing";
     coinFlipInitiative();
   }
@@ -119,7 +121,7 @@ async function playerAttack(initiativeStrike = 1) {
   }
 
   if (move == "feel-out") {
-    writeToOutput(`<span class="move feelOut">You feel out the computer...</span>`, "player");
+    writeToOutput(`<span class="move feelOut">feel out...</span>`, "player");
     if (Math.random() < 0.5) {
       acuity[0] += Math.floor(Math.random() * 10);
       return playerAttack();
@@ -133,13 +135,13 @@ async function playerAttack(initiativeStrike = 1) {
 }
 
 function playerAttempt(move, initiativeStrike) {
-  writeToOutput(`You attempted ${move}`, "player");
+  writeToOutput(`${move}`, "player attempt");
   let block;
   switch (mode) {
     case "standing":
       block = (Math.random() * 100) < (blockSuccessRate(move) - acuity[0] + acuity[1]);
       if (block) {
-        writeToOutput("Computer blocked your attack.", "computer blocked");
+        writeToOutput("blocked.", "computer blocked");
         initiative = "computer";
         return promptUser();
       }
@@ -170,7 +172,7 @@ function playerAttempt(move, initiativeStrike) {
       // 3% of the time, an unblockable "inspired" submission
       let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 3);
       if (block && !inspiredSubmission) {
-        writeToOutput("They blocked your attack.", "computer");
+        writeToOutput("blocked.", "computer");
         initiative = "computer";
         return promptUser();
       }
@@ -275,7 +277,7 @@ async function computerAttack(initiativeStrike = 1) {
   }
 
   if (realMove == "feel-out") {
-    writeToOutput(`<span class="move feelOut">The computer feels you out...</span>`, "computer");
+    writeToOutput(`<span class="move feelOut">feel out</span>`, "computer");
     if (Math.random() < 0.5) {
       acuity[1] += Math.floor(Math.random() * 10);
       return computerAttack();
@@ -306,9 +308,9 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
     }
   }
 
-  writeToOutput(`Computer attemped ${realMove}`, "computer");
+  writeToOutput(`${realMove}`, "computer attempt");
   if (Math.random() * 100 < (blockRate + acuity[0] - acuity[1])) {
-    writeToOutput(`You blocked '${realMove}'!`, "player block");
+    writeToOutput(`blocked.`, "player block");
     initiative = "player";
   } else {
     switch(mode) {
