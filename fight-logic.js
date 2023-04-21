@@ -52,17 +52,18 @@ function promptUser() {
     displayVitals();
     scoreRound();
 
-    recoverBetweenRounds();
     displayVitals();
     // start of next
     round++;
-    writeToOutput(`=== START OF ROUND ${round} ===`);
     if (round > nRounds) {
       return judgeDecision();
       hideRound();
     } else {
       displayRound();
     }
+    writeToOutput(`=== START OF ROUND ${round} ===`);
+    recoverBetweenRounds();
+    displayVitals();
     mode = "standing";
     coinFlipInitiative();
   }
@@ -262,6 +263,8 @@ async function computerAttack(initiativeStrike = 1) {
     if (submissionProgress[1] > 0 || Math.random() < 0.10) {
       availableMoves = availableMoves.concat(submissions);
     }
+    // computer doesn't do heatbutt stomach
+    availableMoves = availableMoves.filter((x) => x != "headbutt-stomach");
   }
 
   let [realMove, computerMoves] = getComputerMove(availableMoves);

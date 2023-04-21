@@ -22,6 +22,10 @@ function damage(recipient, move) {
   switch (recipient) {
     case "player":
       health[0] -= damage;
+      // a TKO move cannot cause health 0
+      if (health[0] == 0 && !tkoMoves.includes(move)) {
+        health[0] = 1
+      }
       acuity[0] = Math.max(0, acuity[0] - Math.floor(damage * Math.random() * 3));
       roundPoints[1] += damage;
       // default min 1 point except for headbutt-stomach
@@ -31,6 +35,10 @@ function damage(recipient, move) {
       break;
     case "computer":
       health[1] -= damage;
+      // a TKO move cannot cause health 0
+      if (health[1] == 0 && !tkoMoves.includes(move)) {
+        health[1] = 1
+      }
       acuity[1] = Math.max(0, acuity[1] - Math.floor(damage * Math.random() * 3));
       roundPoints[0] += damage;
       // default min 1 point except for headbutt-stomach

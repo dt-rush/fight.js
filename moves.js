@@ -19,7 +19,9 @@ const grapplingMoves = [
   "knee-to-body",
 ];
 
-submissions = [
+const tkoMoves = ["jab", "hook", "uppercut", "head-kick", "elbow", "smesh"];
+
+const submissions = [
   "kimura", 
   "rear-naked-choke", 
   "arm-bar", 
@@ -34,7 +36,7 @@ const successRate = {
   "uppercut": 45,
   "body-punch": 45,
   "body-kick": 45,
-  "leg-kick": 55,
+  "leg-kick": 65,
   "head-kick": 35,
   "grapple": 45,
 
@@ -60,7 +62,7 @@ const damageRate = {
   "uppercut": 6,
   "body-punch": 5,
   "body-kick": 5,
-  "leg-kick": 4,
+  "leg-kick": 3,
   "head-kick": 6,
   "smesh": 6,
   "headbutt-stomach": 1,
