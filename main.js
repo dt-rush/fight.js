@@ -12,7 +12,6 @@ async function main() {
           */
   displayVitals();
   displayRound();
-  document.getElementById("vitals").scrollIntoView();
   return promptUser();
 }
 
