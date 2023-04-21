@@ -191,7 +191,7 @@ function playerAttempt(move, initiativeStrike) {
           mode = "standing";
           return playerAttack();
         } else {
-          submissionProgress[1] = Math.max(0, submissionProgress[1] - 1);
+          submissionProgress[1] = 0;
           return playerAttack(initiativeStrike);
         }
       }
@@ -344,7 +344,7 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
             mode = "standing";
             return computerAttack();
           } else {
-            submissionProgress[0] = Math.max(0, submissionProgress[0] - 1);
+            submissionProgress[0] = 0;
             return computerAttack(initiativeStrike);
           }
         }
