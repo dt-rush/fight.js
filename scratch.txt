@@ -1,3 +1,9 @@
+oddly, the behaviour where - at page load - the page is scrolled down about 5% from the top, only happens on the github.io github pages site. when i visit index.html (the same index.html! all the same js files and css too!) through the :8080 of my dev machine, it does not show the behaviour. the top of the page stays where it is, nicely visible.
+
+why is it scrolling down automatically when i view the same site from github pages URL? 
+
+
+
 "messenger-style" display (easily see whose moves are whose in the history by left/right align)
 
 
