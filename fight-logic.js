@@ -142,7 +142,7 @@ function playerAttempt(move, initiativeStrike) {
     case "standing":
       block = (Math.random() * 100) < (blockSuccessRate(move) - acuity[0] + acuity[1]);
       if (block) {
-        writeToOutput("blocked.", "computer blocked");
+        writeToOutput("blocked.", "computer block");
         initiative = "computer";
         return promptUser();
       }
@@ -175,7 +175,7 @@ function playerAttempt(move, initiativeStrike) {
       // 3% of the time, an unblockable "inspired" submission
       let inspiredSubmission = submissions.includes(move) && (Math.random() * 100 < 3);
       if (block && !inspiredSubmission) {
-        writeToOutput("blocked.", "computer blocked");
+        writeToOutput("blocked.", "computer block");
         initiative = "computer";
         return promptUser();
       }
