@@ -121,7 +121,7 @@ function askQuestion(query) {
 
     // Create text input and append it to the modal div
     const input = document.createElement('input');
-    input.type = 'text';
+    input.type = 'search'; // search so it doesn't try to autocomplete
     input.placeholder = query; // Set the query text as the input placeholder
     input.setAttribute('autocomplete', 'off'); // Disable autocomplete
     modalDiv.appendChild(input);
