@@ -84,12 +84,14 @@ html, body {
   max-width: 48%;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: left;
   flex: 1;
 }
 
-#vitals .row.name .vital.computerName {
+#vitals .row.name .vital.playerName {
   text-align: right;
+}
+#vitals .row.name .vital.computerName {
+  text-align: left;
 }
 
 #vitals .row.health {

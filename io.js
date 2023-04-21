@@ -24,23 +24,23 @@ function displayVitals() {
   if (displayName.length > 32) {
     displayName = displayName.substr(0, 32) + "...";
   }
-  row1.appendChild(createVital(['playerName'], displayName));
   row1.appendChild(createVital(['computerName'], 'Computer'));
+  row1.appendChild(createVital(['playerName'], displayName));
 
   const row2 = createRow(["health"]);
-  row2.appendChild(createVital(['playerHealth'], `${health[0]}`));
-  row2.appendChild(createVital(['symbol'], '❤️'));
   row2.appendChild(createVital(['computerHealth'], `${health[1]}`));
+  row2.appendChild(createVital(['symbol'], '❤️'));
+  row2.appendChild(createVital(['playerHealth'], `${health[0]}`));
 
   const row3 = createRow(["acuity"]);
-  row3.appendChild(createVital(['playerAcuity'], `${Math.round(acuity[0])}`));
-  row3.appendChild(createVital(['symbol'], '💡'));
   row3.appendChild(createVital(['computerAcuity'], `${Math.round(acuity[1])}`));
+  row3.appendChild(createVital(['symbol'], '💡'));
+  row3.appendChild(createVital(['playerAcuity'], `${Math.round(acuity[0])}`));
 
   const row4 = createRow(["submission"]);
-  row4.appendChild(createVital(['playerSubmission'], `${Math.round(submissionProgress[0])}`));
-  row4.appendChild(createVital(['symbol'], '🤼'));
   row4.appendChild(createVital(['computerSubmission'], `${Math.round(submissionProgress[1])}`));
+  row4.appendChild(createVital(['symbol'], '🤼'));
+  row4.appendChild(createVital(['playerSubmission'], `${Math.round(submissionProgress[0])}`));
 
   vitalsDiv.appendChild(row1);
   vitalsDiv.appendChild(row2);
