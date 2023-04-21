@@ -123,7 +123,7 @@ function askQuestion(query) {
     const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = query; // Set the query text as the input placeholder
-    input.setAttribute('autocomplete', 'off'); // Disable autocomplete
+    input.setAttribute('autocomplete', 'do-not-autofill'); // Disable autocomplete
     modalDiv.appendChild(input);
 
     // Add modal div to the body!
