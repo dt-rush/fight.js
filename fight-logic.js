@@ -157,7 +157,7 @@ function playerAttempt(move, initiativeStrike) {
       }
       writeToOutput(`'${move}' connects!`, "player green");
       damage("computer", move);
-      if (health[1] < 6 || Math.random() < (0.37 / initiativeStrike)) {
+      if ((health[1] < 6 && Math.random() < 0.70) || Math.random() < (0.37 / initiativeStrike)) {
         writeToOutput("You maintain the initiative!", "player");
         return playerAttack(initiativeStrike + 1);
       }
@@ -203,7 +203,7 @@ function playerAttempt(move, initiativeStrike) {
       } else {
         damage("computer", move);
       }
-      if (health[1] < 6 || Math.random() < (0.70 / initiativeStrike)) {
+      if ((health[1] < 6 && Math.random() < 0.70) || Math.random() < (0.70 / initiativeStrike)) {
         writeToOutput("You maintain the initiative grappling", "player");
         return playerAttack(initiativeStrike + 1);
       } else {
@@ -356,7 +356,7 @@ function computerAttempt(realMove, computerMoves, initiativeStrike, blockChoice)
         break;
     }
 
-    if (health[0] < 6 || (Math.random() * 100) < (70 / initiativeStrike)) {
+    if ((health[0] < 6 && Math.random() < 0.70) || (Math.random() * 100) < (70 / initiativeStrike)) {
       writeToOutput("Computer maintains the initiative!", "computer");
       return computerAttack(initiativeStrike + 1);
     } else {
