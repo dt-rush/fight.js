@@ -1,8 +1,8 @@
 const fightResponses = {
-  create: fightCreate,
-  join: fightJoin,
-  attack: fightAttack,
-  block: fightBlock,
+  "fight/create": fightCreate,
+  "fight/join": fightJoin,
+  "fight/attack": fightAttack,
+  "fight/block": fightBlock,
 };
 
 function fightCreate(data, ws) {
