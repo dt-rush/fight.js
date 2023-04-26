@@ -1,0 +1,50 @@
+{
+  "name": "fight",
+  "version": "1.0.0",
+  "description": "fight!!!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx kill-port 8080 || true; node server/server.js",
+    "build": "webpack --mode production",
+    "watch": "nodemon --watch src --ext js,jsx --exec 'npm run build'",
+    "devserver": "concurrently \"npm run start\" \"npm run watch\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dt-rush/fight.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dt-rush/fight.js/issues"
+  },
+  "homepage": "https://github.com/dt-rush/fight.js#readme",
+  "dependencies": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-react": "^7.18.6",
+    "babel-core": "6.26.3",
+    "babel-loader": "8.2.3",
+    "babel-preset-env": "1.7.0",
+    "babel-preset-react": "6.24.1",
+    "concurrently": "^8.0.1",
+    "css-loader": "6.6.0",
+    "express": "4.17.3",
+    "html-webpack-plugin": "5.5.0",
+    "http": "0.0.1-security",
+    "kill-port": "^2.0.1",
+    "nodemon": "^2.0.22",
+    "path": "0.12.7",
+    "style-loader": "3.3.1",
+    "terser-webpack-plugin": "^5.3.7",
+    "uuid": "8.3.2",
+    "webpack": "5.68.0",
+    "webpack-cli": "4.9.1",
+    "ws": "8.7.0"
+  }
+}
