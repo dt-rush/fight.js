@@ -89,7 +89,7 @@ html, body {
 #vitals .row.name .vital.playerName {
   text-align: right;
 }
-#vitals .row.name .vital.computerName {
+#vitals .row.name .vital.opponentName {
   text-align: left;
 }
 
@@ -177,12 +177,12 @@ html, body {
   background-color: #aaeeaa;
 }
 
-/* any message for the computer */
-#output .message.computer {
+/* any message for the opponent */
+#output .message.opponent {
   text-align: left;
 }
-/* a failure message for the computer */
-#output .message.computer.red .pill {
+/* a failure message for the opponent */
+#output .message.opponent.red .pill {
   color: #CC0000;
   background-color: #eeaaaa;
 }

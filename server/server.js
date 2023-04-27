@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const fights = require('./fight-store');
+const { fights, players } = require('./fight-store');
 const port = 8080;
 
 //
@@ -33,21 +33,10 @@ app.get('/api/challenge', (req, res) => {
   const fightData = {
     id: fightId,
     url: fightUrl,
-    players: [],
-    playerStates: {
-      player1: {
-        health: 20,
-        acuity: 100,
-        submissionProgress: 0,
-        initiative: false
-      },
-      player2: {
-        health: 20,
-        acuity: 100,
-        submissionProgress: 0,
-        initiative: false
-      }
-    },
+    names: [],
+    round: 1,
+    t: 0,
+    states: {},
     status: 'waiting' // Possible statuses: 'waiting', 'in-progress', 'finished'
   };
   fights.set(fightId, fightData);
@@ -63,7 +52,7 @@ app.get('/api/challenge', (req, res) => {
 wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     const data = JSON.parse(message);
-
+    console.log(data);
     if (fightResponses.hasOwnProperty(data.type)) {
       fightResponses[data.type](data, ws);
     } else {

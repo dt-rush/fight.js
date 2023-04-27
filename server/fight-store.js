@@ -1,2 +1,8 @@
+// stores fight data like health, acuity, round, etc.
 const fights = new Map();
-module.exports = fights;
+// stores the websockets for players
+const players = new Map();
+module.exports = {
+  fights,
+  players
+};

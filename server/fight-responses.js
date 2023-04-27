@@ -1,4 +1,12 @@
-const fights = require('./fight-store');
+const { fights, players } = require('./fight-store');
+
+
+
+const fightResponses = {
+  "fight/join": fightJoin,
+  "fight/attack": fightAttack,
+  "fight/block": fightBlock,
+};
 
 function fightJoin(data, ws) {
   const fightData = fights.get(data.fightId);
@@ -8,17 +16,26 @@ function fightJoin(data, ws) {
     return;
   }
 
-  if (fightData.players.length === 2) {
+  if (fightData.names.length === 2) {
     ws.send(JSON.stringify({ type: 'error', message: 'Fight already has two players' }));
     return;
   }
 
-  fightData.players.push(ws);
+  players.set(data.username, ws);
+  fightData.names.push(data.username);
+  fightData.states[data.username] = {
+    health: 20,
+    acuity: 100,
+    submissionProgress: 0,
+    initiative: false
+  };
 
-  if (fightData.players.length === 2) {
+  if (fightData.names.length === 2) {
     // Notify both players that the fight can start
-    for (const player of fightData.players) {
-      player.send(JSON.stringify({ type: 'fight/start', fightId: fightData.id }));
+    for (const name of fightData.names) {
+      console.log(`sending fight/start to player ${name}`);
+      const playerWebSocket = players.get(name);
+      playerWebSocket.send(JSON.stringify({ type: 'fight/start', fightData: fightData }));
     }
   }
 }
@@ -28,11 +45,5 @@ function fightAttack(data, ws) {
 
 function fightBlock(data, ws) {
 }
-
-const fightResponses = {
-  "fight/join": fightJoin,
-  "fight/attack": fightAttack,
-  "fight/block": fightBlock,
-};
 
 module.exports = { fightResponses };
