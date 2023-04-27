@@ -1,3 +1,153 @@
+so, client side, let's do this:
+
+```
+ case 'fight/canAttack':
+            setOptions({ list: data.options, query: 'attack' });
+            break;
+          case 'fight/canBlock':
+            setOptions({ list: data.options, query: 'block' });
+            break;
+```
+
+where we have the server send options as part of the payload for canAttack and canBlock.
+
+it determines what to send depending on what's going on.
+
+Let's say we have, server-side, moves.js:
+
+```
+const standingMoves = [
+  "feel-out",
+  "jab",
+  "hook",
+  "uppercut",
+  "body-punch",
+  "body-kick",
+  "leg-kick",
+  "head-kick",
+  "grapple"
+];
+
+const grapplingMoves = [
+  "progress",
+  "escape",
+  "elbow",
+  "smesh",
+  "headbutt-stomach",
+  "knee-to-body",
+];
+
+const submissions = [
+  "kimura", 
+  "rear-naked-choke", 
+  "arm-bar", 
+  "triangle-choke",
+  "guillotine"
+];
+
+const successRate = {
+  "jab": 45,
+  "elbow": 45,
+  "hook": 45,
+  "uppercut": 45,
+  "body-punch": 45,
+  "body-kick": 45,
+  "leg-kick": 65,
+  "head-kick": 35,
+  "grapple": 45,
+
+  // grapple only
+  "progress": 33,
+  "escape": 37,
+  "smesh": 45,
+  "headbutt-stomach": 55,
+  "knee-to-body": 40,
+
+  // submissions
+  "kimura": 5,
+  "rear-naked-choke": 8,
+  "arm-bar": 5,
+  "triangle-choke": 5,
+  "guillotine": 5
+}
+
+const damageRate = {
+  "jab": 5,
+  "elbow": 5,
+  "hook": 5,
+  "uppercut": 6,
+  "body-punch": 5,
+  "body-kick": 5,
+  "leg-kick": 3,
+  "head-kick": 6,
+  "smesh": 6,
+  "headbutt-stomach": 1,
+  "knee-to-body": 5,
+}
+
+module.exports = {
+  standingMoves,
+  grapplingMoves,
+  tkoMoves,
+  submissions,
+  successRate,
+  damageRate,
+};
+```
+
+so, in the case of sending canAttack, we will determine which moves are available based on this logic:
+
+```
+let availableMoves = [];
+  if (fightData.mode === "standing") {
+    availableMoves = [...standingMoves];
+  } else if (fightData.mode === "grappling") {
+    availableMoves = [...grapplingMoves];
+    // in order to be able to try a submission you have to have some submissionProgress
+    // *or* 10% of the time, you can seize a wild opportunity knowing it's a long shot
+    // statistics-wise (submission progress changes submission probability)
+    if (submissionProgress[0] > 0 || Math.random() < 0.10) {
+      availableMoves = availableMoves.concat(submissions);
+    }
+  }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 i have written a little MMA simulator which is turn-based, in javascript. It uses functions that present clickable divs to the user, receiving the answer, and then takes actions based on the move /block selected (depending on computer vs player, who has initiative). Here is the code for the fight/turn logic. You can see it references global state variables for the fight, such as acuity, submissionProgress, and health. I would like to make a *multiplayer* human-to-human version. 
 
 ```

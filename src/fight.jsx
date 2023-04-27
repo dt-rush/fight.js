@@ -13,10 +13,25 @@ function Fight() {
   const [fightData, setFightData] = useState(null);
   const [player, setPlayer] = useState({});
   const [opponent, setOpponent] = useState({});
+  // TODO: replace with proper federated username injection
   const [username, setUsername] = useState(null);
   const [opponentUsername, setOpponentUsername] = useState(null);
+  const [options, setOptions] = useState({ list: [], query: '' });
 
-  // TODO: replace with proper federated username injection
+  const sendWS = (payload) => {
+    payload.fightId = fightData.id;
+    payload.user = username;
+    ws.send(JSON.stringify(payload))
+  }
+
+  const handleOptionClick = async (option) => {
+    let payload = {
+      type: `fight/${options.query}`
+    };
+    payload[options.query] = option;
+    sendWS(payload);
+    setOptions({ list: [], query: '' });
+  };
 
   useEffect(() => {
     const initWebSocket = async () => {
@@ -35,10 +50,18 @@ function Fight() {
 
       websocket.addEventListener('message', (event) => {
         const data = JSON.parse(event.data);
-        if (data.type === 'fight/start') {
-          setFightData(data.fightData);
+        switch(data.type) {
+          case 'fight/start':
+            setFightData(data.fightData);
+            break;
+          case 'fight/canAttack':
+            setOptions({ list: data.options, query: 'attack' });
+            break;
+          case 'fight/canBlock':
+            setOptions({ list: data.options, query: 'block' });
+            break;
         }
-        else if (data.type === 'error') {
+        if (data.type === 'error') {
           setError(data.message);
         }
       });
@@ -65,7 +88,7 @@ function Fight() {
   }, [fightData, username]);
 
   return (
-    <div>
+    <>
       {error ? (
         <div>{error}</div>
       ) : fightData ? (
@@ -97,12 +120,28 @@ function Fight() {
           </div>
           <div id="round">{fightData.round}</div>
           <div id="output"></div>
-          <div id="options"></div>
+          <div id="options">
+            {options.query && <div className="query">{options.query}</div>}
+            <div className="grid">
+              <div className="gridList">
+                {options.list.map((option, index) => (
+                  <div
+                    key={index}
+                    className="clickable-option"
+                    data-value={index + 1}
+                    onClick={() => handleOptionClick(option)}
+                  >
+                    <div className="label">{option}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </>
       ) : (
         <p>Waiting for opponent...</p>
       )}
-    </div>
+    </>
   );
 }
 
