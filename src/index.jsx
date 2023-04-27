@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MainMenu from './main-menu';
 import CreateFighter from './create-fighter';
-import StartFight from './start-fight';
+import Challenge from './challenge';
+import Fight from './fight';
 
 async function main() {
   ReactDOM.render(
@@ -11,7 +12,8 @@ async function main() {
       <Routes>
         <Route path="/" element={<MainMenu/>} />
         <Route path="/fighter/create" element={<CreateFighter/>} />
-        <Route path="/fight/start" element={<StartFight/>} />
+        <Route path="/challenge" element={<Challenge/>} />
+        <Route path="/fight/:uuid" element={<Fight/>} />
       </Routes>
     </Router>,
     document.getElementById('content')

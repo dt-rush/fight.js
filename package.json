@@ -7,8 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx kill-port 8080 || true; node server/server.js",
     "build": "webpack --mode production",
-    "watch": "nodemon --watch src --ext js,jsx --exec 'npm run build'",
-    "devserver": "concurrently \"npm run start\" \"npm run watch\""
+    "watchClient": "nodemon --watch src --ext js,jsx --exec 'npm run build'",
+    "watchServer": "nodemon --watch server --ext js --exec 'npm run start'",
+    "devserver": "concurrently \"npm run watchServer\" \"npm run watchClient\""
   },
   "repository": {
     "type": "git",

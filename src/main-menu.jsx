@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const options = [
   { path: '/fighter/create', label: 'create fighter' },
-  { path: '/fight/start', label: 'start fight' },
+  { path: '/challenge', label: 'challenge' },
 ];
 
 function MainMenu() {

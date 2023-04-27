@@ -27,7 +27,35 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // API
 //
 
-// TODO: fighter creation/naming and fight record lookup
+app.get('/api/challenge', (req, res) => {
+  const fightId = uuidv4();
+  const fightUrl = `/fight/${fightId}`;
+  const fightData = {
+    id: fightId,
+    url: fightUrl,
+    players: [],
+    playerStates: {
+      player1: {
+        health: 20,
+        acuity: 100,
+        submissionProgress: 0,
+        initiative: false
+      },
+      player2: {
+        health: 20,
+        acuity: 100,
+        submissionProgress: 0,
+        initiative: false
+      }
+    },
+    status: 'waiting' // Possible statuses: 'waiting', 'in-progress', 'finished'
+  };
+  fights.set(fightId, fightData);
+  res.json({ fightId, fightUrl });
+});
+
+// TODO: fighter creation/naming (/api/fighter/...)
+// TODO: fight record lookup (/api/fighter/record)
 
 //
 // Websocket connection
