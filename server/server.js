@@ -14,7 +14,7 @@ const port = 8080;
 //
 // our imports
 //
-const { fightResponses } = require('./fight_responses.js');
+const { fightResponses } = require('./fight-responses.js');
 
 //
 // build server
@@ -46,6 +46,11 @@ wss.on('connection', (ws) => {
     // Handle disconnection
     // TODO: Remove the WebSocket reference from the fight
   });
+});
+
+// Handle client-side routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
 // Start the server
