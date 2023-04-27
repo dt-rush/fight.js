@@ -22,7 +22,7 @@ function Challenge() {
   }, []);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.origin + '/' + url);
+    navigator.clipboard.writeText(window.location.origin + url);
   };
 
   return (

@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const fights = new Map();
+const fights = require('./fight-store');
 const port = 8080;
 
 //
@@ -21,7 +21,7 @@ const { fightResponses } = require('./fight-responses.js');
 //
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'dist')));
 
 //
 // API
@@ -64,10 +64,10 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     const data = JSON.parse(message);
 
-    if (fightResponses.hasOwnProperty(data.method)) {
-      fightResponses[data.method](data, ws);
+    if (fightResponses.hasOwnProperty(data.type)) {
+      fightResponses[data.type](data, ws);
     } else {
-      ws.send(JSON.stringify({ type: 'error', message: 'Invalid method' }));
+      ws.send(JSON.stringify({ type: 'error', message: 'Invalid type' }));
     }
   });
   ws.on('close', () => {
@@ -78,7 +78,7 @@ wss.on('connection', (ws) => {
 
 // Handle client-side routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
 });
 
 // Start the server

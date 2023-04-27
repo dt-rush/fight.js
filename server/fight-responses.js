@@ -1,8 +1,4 @@
-const fightResponses = {
-  "fight/join": fightJoin,
-  "fight/attack": fightAttack,
-  "fight/block": fightBlock,
-};
+const fights = require('./fight-store');
 
 function fightJoin(data, ws) {
   const fightData = fights.get(data.fightId);
@@ -22,7 +18,7 @@ function fightJoin(data, ws) {
   if (fightData.players.length === 2) {
     // Notify both players that the fight can start
     for (const player of fightData.players) {
-      player.send(JSON.stringify({ type: 'start', fightId: fightData.id }));
+      player.send(JSON.stringify({ type: 'fight/start', fightId: fightData.id }));
     }
   }
 }
@@ -32,5 +28,11 @@ function fightAttack(data, ws) {
 
 function fightBlock(data, ws) {
 }
+
+const fightResponses = {
+  "fight/join": fightJoin,
+  "fight/attack": fightAttack,
+  "fight/block": fightBlock,
+};
 
 module.exports = { fightResponses };
