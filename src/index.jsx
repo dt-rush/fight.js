@@ -26,7 +26,14 @@ async function main() {
   );
 }
 
-
+// TODO: find somewhere else to put this?
+const adjustContentHeight = () => {
+  const content = document.getElementById('content');
+  const vh = window.innerHeight * 0.01;
+  content.style.height = `${window.innerHeight}px`;
+};
+window.addEventListener('resize', adjustContentHeight);
+adjustContentHeight();
 
 main()
   .then(() => {

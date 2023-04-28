@@ -77,7 +77,7 @@ function Fight() {
       });
       setUsername(username);
 
-      const websocket = new WebSocket('ws://localhost:8080');
+      const websocket = new WebSocket(`ws://${window.location.hostname}:8080`);
       setWs(websocket);
 
       websocket.addEventListener('open', () => {
