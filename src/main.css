@@ -150,6 +150,10 @@ html, body {
   display: inline-block;
 }
 
+#output .message.breakline {
+  text-align: center;
+}
+
 /* announcer ("buffer") message */
 #output .message.buffer {
   font-weight: bold;

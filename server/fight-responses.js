@@ -1,6 +1,6 @@
 const { fights, fightsHidden, players } = require('./fight-store');
 const { standingMoves, grapplingMoves, submissions, damageRate, blockSuccessRate } = require('./moves');
-
+const { assignRoundScores, stoppage, judgeDecision } = require('./victory.js');
 
 function getAvailableMoves(fightData, user) {
   // TODO: implement differential movesets for players
@@ -123,7 +123,7 @@ function tickTime(fightData) {
   for (const name of fightData.names) {
     if (fightData.states[name].health <= 0) {
       const victor = fightData.names.find(name_ => name_ !== name);
-      stoppage(victor, "TKO");
+      stoppage(fightData, victor, "TKO");
     }
   }
 
@@ -144,12 +144,13 @@ function tickTime(fightData) {
   if (fightData.t === fightData.roundTime) {
     // End this round
     endRound(fightData);
+    assignRoundScores(fightData);
     // advance round
     fightData.t = 0;
     fightData.round++;
 
     if (fightData.round > fightData.nRounds) {
-      return judgeDecision();
+      return judgeDecision(fightData);
     } else {
       // TODO recoverBetweenRounds()
       startRound(fightData);
@@ -223,9 +224,43 @@ function fightJoin(fightData, data, ws) {
 function fightAttack(fightData, data, ws) {
   const realMove = data.attack;
   const hiddenData = fightsHidden.get(data.fightId);
-  hiddenData.realMove = realMove;
-  const telegraphMoves = getTelegraphMoves(fightData, realMove, getAvailableMoves(fightData, data.user));
-  canBlock(fightData, telegraphMoves);
+  const attacker = fightData.names[fightData.initiative];
+
+  if (realMove === "feel-out") {
+    const attackerName = attacker;
+    const attackerIndex = fightData.initiative;
+    const blockerIndex = (attackerIndex + 1) % 2;
+    const blockerName = fightData.names[blockerIndex];
+
+    const feelOutMessage = {
+      content: `<span class="move feelOut">feel out...</span>`,
+    };
+
+    // Send the feel-out message to the client
+    const dataPayload = {
+      type: "fight/output",
+      message: feelOutMessage,
+    };
+    for (const name of fightData.names) {
+      const playerWebSocket = players.get(name);
+      dataPayload.message.className = name === attackerName ? 'player' : 'opponent';
+      playerWebSocket.send(JSON.stringify(dataPayload));
+    }
+
+    if (Math.random() < 0.5) {
+      fightData.states[fightData.names[attackerIndex]].acuity += Math.floor(Math.random() * 10);
+      // Send the updated fight data to both clients
+      notifyFightData(fightData);
+    } else {
+      // switch initiative
+      fightData.initiative = (fightData.initiative + 1) % 2;
+    }
+    canAttack(fightData);
+  } else {
+    hiddenData.realMove = realMove;
+    const telegraphMoves = getTelegraphMoves(fightData, realMove, getAvailableMoves(fightData, data.user));
+    canBlock(fightData, telegraphMoves);
+  }
 }
 
 function fightBlock(fightData, data, ws) {
@@ -256,6 +291,7 @@ function fightBlock(fightData, data, ws) {
 
   if (Math.random() * 100 < (blockRate + blockerState.acuity - attackerState.acuity)) {
     notifyBlocked(fightData, realMove);
+    fightData.initiative = (fightData.initiative + 1) % 2;
     return tickTime(fightData);
   } else {
     notifyConnects(fightData, realMove);
@@ -284,7 +320,7 @@ function fightBlock(fightData, data, ws) {
           }
         } else if (submissions.includes(realMove)) {
           // Call stoppage function with appropriate arguments
-          stoppage(attacker, `submission by ${realMove}`);
+          stoppage(fightData, attacker, `submission by ${realMove}`);
         } else {
           damage(fightData, blocker, realMove);
         }

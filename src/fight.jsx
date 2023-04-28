@@ -18,6 +18,7 @@ function Fight() {
   const [messages, setMessages] = useState([]);
   const [opponentUsername, setOpponentUsername] = useState(null);
   const [options, setOptions] = useState({ list: [], query: '' });
+  const [showOptions, setShowOptions] = useState(true);
 
   // refs for use in websocket handler
   const fightDataRef = useRef(null);
@@ -33,6 +34,9 @@ function Fight() {
     opponentUsernameRef.current = opponentUsername;
   }, [opponentUsername]);
 
+  // ref needed to set scrollTop
+  const outputRef = useRef(null);
+
   const sendWS = (payload) => {
     payload.fightId = fightData.id;
     payload.user = username;
@@ -44,7 +48,14 @@ function Fight() {
       text: text || '',
       classes: classes.split(' '),
     };
-    setMessages((prevMessages) => [...prevMessages, message]);
+    setMessages((prevMessages) => {
+      setTimeout(() => {
+        if (outputRef.current) {
+          outputRef.current.scrollTop = outputRef.current.scrollHeight;
+        }
+      }, 0);
+      return [...prevMessages, message];
+    });
   };
 
   const handleOptionClick = async (option) => {
@@ -54,7 +65,7 @@ function Fight() {
     payload[options.query] = option;
     sendWS(payload);
     setOptions({ list: [], query: '' });
-    if (options.query === 'attack') {
+    if (options.query === 'attack' && option !== 'feel-out') {
       writeToOutput(`${option}`, 'player attempt');
     }
   };
@@ -80,12 +91,16 @@ function Fight() {
           case 'fight/start':
             // TODO: do something here
             break;
+
+          case 'fight/data':
+            setFightData(data.fightData);
+            break;
+          case 'fight/output':
+            writeToOutput(data.message.content, data.message.className);
+            break;
           case 'fight/roundStart':
             setFightData(data.fightData);
             writeToOutput(`=== START OF ROUND ${data.fightData.round} ===`);
-            break;
-          case 'fight/data':
-            setFightData(data.fightData);
             break;
           case 'fight/roundEnd':
             setFightData(data.fightData);
@@ -120,6 +135,13 @@ function Fight() {
               writeToOutput(`'${data.move}' succeeds!`, isPlayer ? 'player green' : 'opponent red');
             }
             break;
+          case 'fight/stoppage':
+            setFightData(data.fightData)
+            data.messages.forEach((message) => {
+              writeToOutput(message.content, message.className);
+            });
+            setShowOptions(false);
+            break;
         }
         if (data.type === 'error') {
           setError(data.message);
@@ -148,7 +170,7 @@ function Fight() {
 
   const renderMessage = (message, index) => (
     <div key={index} className={`message ${message.classes.join(' ')}`}>
-      <span className="pill">{message.text}</span>
+      <span className="pill" dangerouslySetInnerHTML={{ __html: message.text }}></span>
     </div>
   );
 
@@ -184,9 +206,10 @@ function Fight() {
             </div>
           </div>
           <div id="round">{fightData.round}</div>
-          <div id="output">
+          <div id="output" ref={outputRef}>
             {messages.map((message, index) => renderMessage(message, index))}
           </div>
+          {showOptions && (
           <div id="options">
             {options.query && <div className="query">{options.query}</div>}
             <div className="grid">
@@ -203,7 +226,8 @@ function Fight() {
                 ))}
               </div>
             </div>
-          </div>
+          </div>)
+          }
         </>
       ) : (
         <p>Waiting for opponent...</p>

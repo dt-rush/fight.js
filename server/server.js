@@ -41,7 +41,9 @@ app.get('/api/challenge', (req, res) => {
     states: {},
     initiative: -1,
     mode: 'standing',
-    status: 'waiting' // Possible statuses: 'waiting', 'in-progress', 'finished'
+    status: 'waiting', // Possible statuses: 'waiting', 'in-progress', 'finished'
+    roundPoints: [0, 0],
+    judgeScores: [[0, 0], [0, 0], [0, 0]],
   };
   fights.set(fightId, fightData);
   fightsHidden.set(fightId, {});
