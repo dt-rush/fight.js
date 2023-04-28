@@ -173,6 +173,7 @@ function tickTime(fightData) {
 }
 
 function startFight(fightData) {
+  fightData.status = 'in-progress';
   for (const name of fightData.names) {
     const playerWebSocket = players.get(name);
     playerWebSocket.send(JSON.stringify({ type: 'fight/start' }));

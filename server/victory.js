@@ -1,7 +1,8 @@
-const { fightsHidden, players } = require('./fight-store');
+const { players } = require('./fight-store');
+
+const { fightAfterlife } = require('./fight-afterlife');
 
 const stoppage = (fightData, victor, method) => {
-  const hiddenData = fightsHidden.get(fightData.id);
   const victorName = victor.toUpperCase();
   const messages = [
     { content: "-----", className: "breakline" },
@@ -14,6 +15,8 @@ const stoppage = (fightData, victor, method) => {
       className: "buffer",
     },
   ];
+  fightData.result = `${victorName} by ${method} in round ${fightData.round}`;
+  fightData.status = 'finished';
 
   const dataPayload = {
     type: "fight/stoppage",
@@ -26,6 +29,8 @@ const stoppage = (fightData, victor, method) => {
     const playerWebSocket = players.get(name);
     playerWebSocket.send(JSON.stringify(dataPayload));
   }
+
+  fightAfterlife(fightData);
 };
 
 function assignRoundScores(fightData) {
@@ -71,7 +76,6 @@ function assignRoundScores(fightData) {
 }
 
 const judgeDecision = (fightData) => {
-  const hiddenData = fightsHidden.get(fightData.id);
   const names = fightData.names;
   let playerTotal = 0;
   let opponentTotal = 0;
@@ -111,8 +115,10 @@ const judgeDecision = (fightData) => {
     result = "draw";
   }
 
+  const victorName = names[victorIx];
+
   messages.push({
-    content: result === "draw" ? "This contest is declared a drawww!" : `... declaring the winner... ${names[victorIx].toUpperCase()}!!!`,
+    content: result === "draw" ? "This contest is declared a drawww!" : `... declaring the winner... ${victorName.toUpperCase()}!!!`,
     className: "buffer",
   });
 
@@ -121,12 +127,16 @@ const judgeDecision = (fightData) => {
     messages: messages,
     result: result,
   };
+  fightData.result = `${victorName} by judge's decision`;
+  fightData.status = 'finished';
 
   // Send the judgeDecision data to both users
   for (const name of fightData.names) {
     const playerWebSocket = players.get(name);
     playerWebSocket.send(JSON.stringify(dataPayload));
   }
+
+  fightAfterlife(fightData);
 };
 
 module.exports = {

@@ -9,6 +9,32 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const { fights, fightsHidden, players } = require('./fight-store');
+const { fightAfterlife } = require('./fight-afterlife');
+
+setInterval(() => {
+  // Iterate over the fights Map
+  fights.forEach((fightData, uuid) => {
+    const [playerName1, playerName2] = fightData.names;
+
+    // If both player names are not present, skip this iteration
+    if (!playerName1 || !playerName2) {
+      return;
+    }
+
+    // Check if both players have disconnected their websockets
+    const playerWebSocket1 = players.get(playerName1);
+    const playerWebSocket2 = players.get(playerName2);
+    const bothPlayersDisconnected =
+      playerWebSocket1.readyState === WebSocket.CLOSED &&
+      playerWebSocket2.readyState === WebSocket.CLOSED;
+
+    if (bothPlayersDisconnected) {
+      // Call fightAfterlife on fightData
+      fightAfterlife(fightData);
+    }
+  });
+}, 5 * 1000);
+
 const port = 8080;
 
 //
@@ -28,6 +54,8 @@ app.use(express.static(path.join(__dirname, '..', 'dist')));
 //
 
 app.get('/api/challenge', (req, res) => {
+  // TODO: should we do this somewhere else like in a setInterval?
+
   const fightId = uuidv4();
   const fightUrl = `/fight/${fightId}`;
   const fightData = {
