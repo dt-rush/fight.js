@@ -77,7 +77,8 @@ function Fight() {
       });
       setUsername(username);
 
-      const websocket = new WebSocket(`ws://${window.location.origin}`);
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const websocket = new WebSocket(`${protocol}//${window.location.host}`);
       setWs(websocket);
 
       websocket.addEventListener('open', () => {
