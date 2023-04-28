@@ -1,6 +1,4 @@
-const { players } = require('./fight-store');
-
-const { fightAfterlife } = require('./fight-afterlife');
+const { players, fightAfterlife } = require('./fight-store');
 
 const stoppage = (fightData, victor, method) => {
   let victorName = victor;

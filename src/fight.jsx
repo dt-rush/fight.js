@@ -4,6 +4,30 @@ import { useParams } from 'react-router-dom';
 import ModalContext from './modal-context';
 import TextInputModal from './text-input-modal';
 
+function formatRoundDisplay(round) {
+  const maxRound = 3;
+  const emptySpace = "-";
+  const goldColor = { color: "gold" };
+
+  const roundDisplay = Array.from({ length: maxRound }, (v, i) =>
+    i + 1 === round ? (
+      <span key={i} style={goldColor}>
+        R{round}
+      </span>
+    ) : i < round ? (
+      <span key={i} style={goldColor}>
+        {emptySpace}
+      </span>
+    ) : (
+      <span key={i}>
+        {emptySpace}
+      </span>
+    )
+  );
+
+  return roundDisplay;
+}
+
 function Fight() {
   const { openModal } = useContext(ModalContext);
   const { uuid } = useParams();
@@ -192,37 +216,39 @@ function Fight() {
         <div>{error}</div>
       ) : fightData ? (
         <>
-          <div id="vitals">
-            <div className="row name">
-              <div className="vital opponentName">{opponentUsername}</div>
-              <div className="vital playerName">{username}</div>
-            </div>
-            <div className="row health">
-              <div className="vital opponentHealth">{opponent.health}</div>
-              <div className="vital symbol">❤️</div>
-              <div className="vital playerHealth">{player.health}</div>
-            </div>
-            <div className="row acuity">
-              <div className="vital opponentAcuity">{Math.round(opponent.acuity)}</div>
-              <div className="vital symbol">💡</div>
-              <div className="vital playerAcuity">{Math.round(player.acuity)}</div>
-            </div>
-            <div className="row submission">
-              <div className="vital opponentSubmission">
-                {Math.round(opponent.submissionProgress)}
+          <div id="header" className="header">
+            <div id="vitals">
+              <div className="row name">
+                <div className="vital opponentName">{opponentUsername}</div>
+                <div className="vital playerName">{username}</div>
               </div>
-              <div className="vital symbol">🤼</div>
-              <div className="vital playerSubmission">
-                {Math.round(player.submissionProgress)}
+              <div className="row health">
+                <div className="vital opponentHealth">{opponent.health}</div>
+                <div className="vital symbol">❤️</div>
+                <div className="vital playerHealth">{player.health}</div>
+              </div>
+              <div className="row acuity">
+                <div className="vital opponentAcuity">{Math.round(opponent.acuity)}</div>
+                <div className="vital symbol">💡</div>
+                <div className="vital playerAcuity">{Math.round(player.acuity)}</div>
+              </div>
+              <div className="row submission">
+                <div className="vital opponentSubmission">
+                  {Math.round(opponent.submissionProgress)}
+                </div>
+                <div className="vital symbol">🤼</div>
+                <div className="vital playerSubmission">
+                  {Math.round(player.submissionProgress)}
+                </div>
               </div>
             </div>
+            <div id="round">{formatRoundDisplay(fightData.round)}</div>
           </div>
-          <div id="round">{fightData.round}</div>
           <div id="output" ref={outputRef}>
             {messages.map((message, index) => renderMessage(message, index))}
           </div>
           {showOptions && (
-          <div id="options">
+          <div id="options" className="footer">
             {options.query && <div className="query">{options.query}</div>}
             <div className="grid">
               <div className="gridList">
