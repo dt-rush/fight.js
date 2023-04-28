@@ -95,7 +95,13 @@ function canBlock(fightData, telegraphMoves) {
 function getTelegraphMoves(fightData, realMove, availableMoves) {
   // put the real move 1-3 times (TODO: this is telegraphing mechanic. enrich it)
   const telegraphMoves = [realMove];
-  const realRepetition = Math.floor(Math.random() * 2) + 1;
+  let realRepetition = 1;
+  if (Math.random() < 0.33) {
+    realRepetition = 2;
+  }
+  if (Math.random() < 0.05) {
+    realRepetition = 3;
+  }
   for (let i = 1; i < realRepetition; i++) {
     telegraphMoves.push(realMove);
   }
