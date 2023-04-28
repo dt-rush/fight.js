@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import ModalContext from './modal-context';
@@ -15,14 +15,37 @@ function Fight() {
   const [opponent, setOpponent] = useState({});
   // TODO: replace with proper federated username injection
   const [username, setUsername] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [opponentUsername, setOpponentUsername] = useState(null);
   const [options, setOptions] = useState({ list: [], query: '' });
+
+  // refs for use in websocket handler
+  const fightDataRef = useRef(null);
+  const usernameRef = useRef(null);
+  const opponentUsernameRef = useRef(null);
+  useEffect(() => {
+    fightDataRef.current = fightData;
+  }, [fightData]);
+  useEffect(() => {
+    usernameRef.current = username;
+  }, [username]);
+  useEffect(() => {
+    opponentUsernameRef.current = opponentUsername;
+  }, [opponentUsername]);
 
   const sendWS = (payload) => {
     payload.fightId = fightData.id;
     payload.user = username;
     ws.send(JSON.stringify(payload))
   }
+
+  const writeToOutput = (text, classes = 'info') => {
+    const message = {
+      text: text || '',
+      classes: classes.split(' '),
+    };
+    setMessages((prevMessages) => [...prevMessages, message]);
+  };
 
   const handleOptionClick = async (option) => {
     let payload = {
@@ -31,6 +54,9 @@ function Fight() {
     payload[options.query] = option;
     sendWS(payload);
     setOptions({ list: [], query: '' });
+    if (options.query === 'attack') {
+      writeToOutput(`${option}`, 'player attempt');
+    }
   };
 
   useEffect(() => {
@@ -52,13 +78,47 @@ function Fight() {
         const data = JSON.parse(event.data);
         switch(data.type) {
           case 'fight/start':
+            // TODO: do something here
+            break;
+          case 'fight/roundStart':
             setFightData(data.fightData);
+            writeToOutput(`=== START OF ROUND ${data.fightData.round} ===`);
+            break;
+          case 'fight/data':
+            setFightData(data.fightData);
+            break;
+          case 'fight/roundEnd':
+            setFightData(data.fightData);
+            writeToOutput(`=== END OF ROUND ${data.fightData.round} ===`);
             break;
           case 'fight/canAttack':
             setOptions({ list: data.options, query: 'attack' });
             break;
           case 'fight/canBlock':
             setOptions({ list: data.options, query: 'block' });
+            break;
+          case 'fight/moveBlocked':
+            setFightData(data.fightData);
+            if (data.fighter === username) {
+              writeToOutput('blocked.', 'opponent block');
+            } else {
+              writeToOutput(`${data.move}`, 'opponent attempt');
+              writeToOutput('blocked.', 'player block');
+            }
+            break;
+          case 'fight/moveConnects':
+            setFightData(data.fightData);
+            const isPlayer = data.fighter === username;
+            if (fightDataRef.current.mode === 'standing') {
+              if (data.move === 'grapple') {
+                writeToOutput(`Takedown by ${isPlayer ? usernameRef.current : opponentUsernameRef.current}!`, 
+                                isPlayer ? 'player green' : 'opponent red');
+              } else {
+                writeToOutput(`'${data.move}' connects!`, isPlayer ? 'player green' : 'opponent red');
+              }
+            } else {
+              writeToOutput(`'${data.move}' succeeds!`, isPlayer ? 'player green' : 'opponent red');
+            }
             break;
         }
         if (data.type === 'error') {
@@ -81,11 +141,16 @@ function Fight() {
       const playerUsername = username;
       const opponentUsername = fightData.names.find((name) => name !== playerUsername);
       setOpponentUsername(opponentUsername);
-
       setPlayer(fightData.states[playerUsername]);
       setOpponent(fightData.states[opponentUsername]);
     }
   }, [fightData, username]);
+
+  const renderMessage = (message, index) => (
+    <div key={index} className={`message ${message.classes.join(' ')}`}>
+      <span className="pill">{message.text}</span>
+    </div>
+  );
 
   return (
     <>
@@ -119,7 +184,9 @@ function Fight() {
             </div>
           </div>
           <div id="round">{fightData.round}</div>
-          <div id="output"></div>
+          <div id="output">
+            {messages.map((message, index) => renderMessage(message, index))}
+          </div>
           <div id="options">
             {options.query && <div className="query">{options.query}</div>}
             <div className="grid">

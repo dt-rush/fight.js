@@ -35,6 +35,8 @@ app.get('/api/challenge', (req, res) => {
     url: fightUrl,
     names: [],
     round: 1,
+    roundTime: 12,
+    nRounds: 3,
     t: 0,
     states: {},
     initiative: -1,
@@ -43,6 +45,7 @@ app.get('/api/challenge', (req, res) => {
   };
   fights.set(fightId, fightData);
   fightsHidden.set(fightId, {});
+  fightsHidden.set('initiativeStrike', 0);
   res.json({ fightId, fightUrl });
 });
 

@@ -67,10 +67,16 @@ const damageRate = {
   "knee-to-body": 5,
 }
 
+function blockSuccessRate(move) {
+  return 100 - successRate[move];
+}
+
+
 module.exports = {
   standingMoves,
   grapplingMoves,
   submissions,
   successRate,
   damageRate,
+  blockSuccessRate,
 };
