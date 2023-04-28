@@ -74,8 +74,10 @@ app.get('/api/challenge', (req, res) => {
     judgeScores: [[0, 0], [0, 0], [0, 0]],
   };
   fights.set(fightId, fightData);
-  fightsHidden.set(fightId, {});
-  fightsHidden.set('initiativeStrike', 0);
+  fightsHidden.set(fightId, {
+    initiativeStrike: 0,
+    events: [],
+  });
   res.json({ fightId, fightUrl });
 });
 
@@ -88,9 +90,11 @@ app.get('/api/challenge', (req, res) => {
 wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     const data = JSON.parse(message);
-    console.log(data);
     if (fightResponses.hasOwnProperty(data.type)) {
-      const fightData = fights.get(data.fightId);
+      let fightData = fights.get(data.fightId);
+      fightData = fights.get(data.fightId);
+      hiddenData = fightsHidden.get(data.fightId);
+      hiddenData.events.push(data);
       fightResponses[data.type](fightData, data, ws);
     } else {
       ws.send(JSON.stringify({ type: 'error', message: 'Invalid type' }));

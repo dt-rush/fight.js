@@ -3,7 +3,8 @@ const { players } = require('./fight-store');
 const { fightAfterlife } = require('./fight-afterlife');
 
 const stoppage = (fightData, victor, method) => {
-  const victorName = victor.toUpperCase();
+  let victorName = victor;
+  victorName = victorName.toUpperCase();
   const messages = [
     { content: "-----", className: "breakline" },
     {
@@ -15,7 +16,7 @@ const stoppage = (fightData, victor, method) => {
       className: "buffer",
     },
   ];
-  fightData.result = `${victorName} by ${method} in round ${fightData.round}`;
+  fightData.result = `${victor} by ${method} in round ${fightData.round}`;
   fightData.status = 'finished';
 
   const dataPayload = {
@@ -42,10 +43,10 @@ function assignRoundScores(fightData) {
 
     if (roundPoints[0] >= roundPoints[1]) {
       firstScore = 10;
-      secondScore = Math.round((roundPoints[1] / roundPoints[0]) * 10);
+      secondScore = 9;
     } else {
       secondScore = 10;
-      firstScore = Math.round((roundPoints[0] / roundPoints[1]) * 10);
+      firstScore = 9;
     }
 
     // random judge error
@@ -115,7 +116,9 @@ const judgeDecision = (fightData) => {
     result = "draw";
   }
 
-  const victorName = names[victorIx];
+  const victor = names[victorIx];
+  let victorName = victor;
+  victorName = victorName.toUpperCase();
 
   messages.push({
     content: result === "draw" ? "This contest is declared a drawww!" : `... declaring the winner... ${victorName.toUpperCase()}!!!`,
@@ -127,7 +130,7 @@ const judgeDecision = (fightData) => {
     messages: messages,
     result: result,
   };
-  fightData.result = `${victorName} by judge's decision`;
+  fightData.result = `${victor} by judge's decision`;
   fightData.status = 'finished';
 
   // Send the judgeDecision data to both users

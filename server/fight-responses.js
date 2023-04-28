@@ -327,7 +327,7 @@ function fightBlock(fightData, data, ws) {
           }
         } else if (submissions.includes(realMove)) {
           // Call stoppage function with appropriate arguments
-          stoppage(fightData, attacker, `submission by ${realMove}`);
+          return stoppage(fightData, attacker, `submission by ${realMove}`);
         } else {
           damage(fightData, blocker, realMove);
         }
