@@ -208,6 +208,8 @@ function fightJoin(fightData, data, ws) {
     return;
   }
 
+  console.log(`${data.username} joins fight ${fightData.id}`);
+
   players.set(data.username, ws);
   fightData.names.push(data.username);
   fightData.states[data.username] = {
