@@ -172,7 +172,7 @@ function Fight() {
             data.messages.forEach((message) => {
               writeToOutput(message.content, message.className);
             });
-            setShowOptions(false);
+            setOptions({ list: [], query: '' });
             break;
           case 'fight/end':
             setFightEnded(true);

@@ -27,7 +27,7 @@ function Challenge() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <h1>Start Fight</h1>
+      <h1>Challenge</h1>
       {url && (
         <>
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -42,6 +42,7 @@ function Challenge() {
               }}
             />
             <button onClick={copyToClipboard}>Copy</button>
+            <div>send this link to your opponent</div>
           </div>
           <Link to={url}>Join Fight</Link>
         </>

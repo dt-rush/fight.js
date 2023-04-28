@@ -10,7 +10,7 @@ const stoppage = (fightData, victor, method) => {
       className: "buffer",
     },
     {
-      content: `... declaring the winner... ${victorName}`,
+      content: `... declaring the winner... ${victorName}!!!`,
       className: "buffer",
     },
   ];
@@ -39,18 +39,22 @@ function assignRoundScores(fightData) {
   for (let i = 0; i < 3; i++) {
     let firstScore, secondScore;
 
-    if (roundPoints[0] >= roundPoints[1]) {
+    if (roundPoints[0] > roundPoints[1]) {
       firstScore = 10;
       secondScore = 9;
-    } else {
+    } else if (roundPoints[1] > roundPoints[0]) {
       secondScore = 10;
       firstScore = 9;
+    } else {
+      // if we're here, both players had the same round score. 0 if 0, otherwise 10.
+      firstScore = roundPoints[0] > 0 ? 10 : 0;
+      secondScore = roundPoints[0] > 0 ? 10 : 0;
     }
 
     // random judge error
     let firstError = 0;
     let secondError = 0;
-    // 10% chance of error (3 judges, 3 rounds means there will probably be one error)
+    // 10% chance of error (3 judges, 3 rounds means there will possibly be one error, less likely 2, etc)
     if (Math.random() < 0.1) {
       firstError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
       secondError = Math.floor(Math.random() * 2 - 1); // Random error between -1 and 0
@@ -119,7 +123,7 @@ const judgeDecision = (fightData) => {
   victorName = victorName.toUpperCase();
 
   messages.push({
-    content: result === "draw" ? "This contest is declared a drawww!" : `... declaring the winner... ${victorName.toUpperCase()}!!!`,
+    content: result === "draw" ? "This contest is declared a drawww!" : `... declaring the winner... ${victorName}!!!`,
     className: "buffer",
   });
 

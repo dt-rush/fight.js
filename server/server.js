@@ -86,7 +86,15 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
 });
 
-// Start the server
+// Start the server!
 server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+});
+
+process.on('SIGUSR2', () => {
+  console.log('Received SIGUSR2. Gracefully shutting down the server...');
+  server.close(() => {
+    console.log('Server closed. Exiting...');
+    process.exit(0);
+  });
 });
