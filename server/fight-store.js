@@ -7,7 +7,7 @@ const fights = new Map();
 // fight data not sent to players
 const fightsHidden = new Map();
 // stores the websockets for players
-const players = new Map();
+const sockets = new Map();
 
 function cleanupFights() {
   fights.forEach((fightData, uuid) => {
@@ -19,8 +19,8 @@ function cleanupFights() {
     }
 
     // Check if both players have disconnected their websockets
-    const playerWebSocket1 = players.get(playerName1);
-    const playerWebSocket2 = players.get(playerName2);
+    const playerWebSocket1 = sockets.get(playerName1);
+    const playerWebSocket2 = sockets.get(playerName2);
     const bothPlayersDisconnected =
       playerWebSocket1.readyState === WebSocket.CLOSED &&
       playerWebSocket2.readyState === WebSocket.CLOSED;
@@ -37,7 +37,7 @@ function fightAfterlife(fightData) {
     type: 'fight/end'
   };
   fightData.names.forEach((name) => {
-    const ws = players.get(name);
+    const ws = sockets.get(name);
     ws.send(JSON.stringify(fightEndPayload));
   });
   // TODO: record the fight to the fighter's records
@@ -47,7 +47,7 @@ function fightAfterlife(fightData) {
   console.log(`[${fightData.id}] ` + JSON.stringify(fightsHidden.get(fightData.id), undefined, 2));
   // cleanup the fight state from stores
   fightData.names.forEach((name) => {
-    players.delete(name);
+    sockets.delete(name);
   });
   fights.delete(fightData.id);
   fightsHidden.delete(fightData.id);
@@ -56,7 +56,7 @@ function fightAfterlife(fightData) {
 module.exports = {
   fights,
   fightsHidden,
-  players,
+  sockets,
   cleanupFights,
   fightAfterlife,
 };

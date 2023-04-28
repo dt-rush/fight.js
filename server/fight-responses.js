@@ -1,4 +1,4 @@
-const { fights, fightsHidden, players } = require('./fight-store');
+const { fights, fightsHidden, sockets } = require('./fight-store');
 const { standingMoves, grapplingMoves, submissions, damageRate, blockSuccessRate } = require('./moves');
 const { assignRoundScores, stoppage, judgeDecision } = require('./victory.js');
 
@@ -43,7 +43,7 @@ function notifyFightData(fightData) {
     fightData: fightData,
   };
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify(dataPayload));
   }
 }
@@ -56,7 +56,7 @@ function notifyBlocked(fightData, move) {
     fightData: fightData,
   };
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify(blockPayload));
   }
 }
@@ -69,7 +69,7 @@ function notifyConnects(fightData, move) {
     fightData: fightData,
   };
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify(blockPayload));
   }
 }
@@ -80,7 +80,7 @@ function canAttack(fightData) {
     type: 'fight/canAttack',
     options: getAvailableMoves(fightData, user),
   };
-  players.get(user).send(JSON.stringify(payload));
+  sockets.get(user).send(JSON.stringify(payload));
 }
 
 function canBlock(fightData, telegraphMoves) {
@@ -89,7 +89,7 @@ function canBlock(fightData, telegraphMoves) {
     type: 'fight/canBlock',
     options: telegraphMoves,
   };
-  players.get(user).send(JSON.stringify(payload));
+  sockets.get(user).send(JSON.stringify(payload));
 }
 
 function getTelegraphMoves(fightData, realMove, availableMoves) {
@@ -175,21 +175,21 @@ function tickTime(fightData) {
 function startFight(fightData) {
   fightData.status = 'in-progress';
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify({ type: 'fight/start' }));
   }
 }
 
 function startRound(fightData) {
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify({ type: 'fight/roundStart' , fightData: fightData }));
   }
 }
 
 function endRound(fightData) {
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify({ type: 'fight/roundEnd' , fightData: fightData }));
   }
 }
@@ -210,7 +210,7 @@ function fightJoin(fightData, data, ws) {
 
   console.log(`${data.username} joins fight ${fightData.id}`);
 
-  players.set(data.username, ws);
+  sockets.set(data.username, ws);
   fightData.names.push(data.username);
   fightData.states[data.username] = {
     health: 20,
@@ -251,7 +251,7 @@ function fightAttack(fightData, data, ws) {
       message: feelOutMessage,
     };
     for (const name of fightData.names) {
-      const playerWebSocket = players.get(name);
+      const playerWebSocket = sockets.get(name);
       dataPayload.message.className = name === attackerName ? 'player' : 'opponent';
       playerWebSocket.send(JSON.stringify(dataPayload));
     }

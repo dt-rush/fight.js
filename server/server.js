@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const { fights, fightsHidden, players, cleanupFights } = require('./fight-store');
+const { fights, fightsHidden, cleanupFights } = require('./fight-store');
 
 setInterval(cleanupFights, 5 * 1000);
 

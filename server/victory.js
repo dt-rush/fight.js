@@ -1,4 +1,4 @@
-const { players, fightAfterlife } = require('./fight-store');
+const { sockets, fightAfterlife } = require('./fight-store');
 
 const stoppage = (fightData, victor, method) => {
   let victorName = victor;
@@ -25,7 +25,7 @@ const stoppage = (fightData, victor, method) => {
 
   // Send the stoppage data to both users
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify(dataPayload));
   }
 
@@ -133,7 +133,7 @@ const judgeDecision = (fightData) => {
 
   // Send the judgeDecision data to both users
   for (const name of fightData.names) {
-    const playerWebSocket = players.get(name);
+    const playerWebSocket = sockets.get(name);
     playerWebSocket.send(JSON.stringify(dataPayload));
   }
 
