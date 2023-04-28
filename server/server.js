@@ -35,7 +35,7 @@ setInterval(() => {
   });
 }, 5 * 1000);
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 //
 // our imports
