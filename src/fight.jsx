@@ -15,10 +15,11 @@ function Fight() {
   const [opponent, setOpponent] = useState({});
   // TODO: replace with proper federated username injection
   const [username, setUsername] = useState(null);
-  const [messages, setMessages] = useState([]);
   const [opponentUsername, setOpponentUsername] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [options, setOptions] = useState({ list: [], query: '' });
   const [showOptions, setShowOptions] = useState(true);
+  const [fightEnded, setFightEnded] = useState(false);
 
   // refs for use in websocket handler
   const fightDataRef = useRef(null);
@@ -86,6 +87,12 @@ function Fight() {
         websocket.send(JSON.stringify({ type: 'fight/join', username, fightId: uuid }));
       });
 
+      websocket.addEventListener('close', () => {
+        if (!fightEnded) {
+          setError('Disconnected');
+        }
+      });
+
       websocket.addEventListener('message', (event) => {
         const data = JSON.parse(event.data);
         switch(data.type) {
@@ -142,6 +149,10 @@ function Fight() {
               writeToOutput(message.content, message.className);
             });
             setShowOptions(false);
+            break;
+          case 'fight/end':
+            setFightEnded(true);
+            // TODO: Do any other actions required when the fight ends; rematch button? main menu button?
             break;
         }
         if (data.type === 'error') {

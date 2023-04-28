@@ -1,6 +1,13 @@
 const { fights, fightsHidden, players } = require('./fight-store');
 
 function fightAfterlife(fightData) {
+  const fightEndPayload = {
+    type: 'fight/end'
+  };
+  fightData.names.forEach((name) => {
+    const ws = players.get(name);
+    ws.send(JSON.stringify(fightEndPayload));
+  });
   // TODO: record the fight to the fighter's records
   console.log(`[${fightData.id}] fight data:`);
   console.log(`[${fightData.id}] ` + JSON.stringify(fightData, undefined, 2));
