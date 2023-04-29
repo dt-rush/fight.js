@@ -45,8 +45,7 @@ wss.on('connection', (ws) => {
       usernameToWebSocket.set(data.username, ws);
     }
     // Send to the MQ with the game UUID
-    await sendToMQ(data.fightId, data);
-
+    await rabbitMQHandlers.get(data.fightId).sendToMQ(data);
   });
 
   ws.on('close', () => {

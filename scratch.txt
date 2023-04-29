@@ -1,5 +1,12 @@
 https://chat.openai.com/c/53039a88-8297-488d-9c85-0e5e04f39646
 
+prompt for new chat:
+
+I currently have a game engine built on Node.js, along with a single server application that stores fights and player websockets. I want to modify my game engine's architecture to create a scalable system that includes a frontend and backend instance. The frontend will have the API and receive websocket connections, while the backend will handle game logic and store fight data. To communicate between the frontend and backend instances, I plan to use RabbitMQ messages. I aim to deploy as many frontend and backend instances as necessary using Heroku for scalability. Additionally, I plan to store fight data in a memcache that all instances can access. I'm seeking guidance on any necessary adjustments to align with my intended design, and I'm open to iterative revisions to improve the architecture with input.
+
+
+
+
 
 
 
