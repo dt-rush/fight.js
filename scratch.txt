@@ -1,3 +1,11 @@
+https://chat.openai.com/c/53039a88-8297-488d-9c85-0e5e04f39646
+
+
+
+
+
+
+
 so, client side, let's do this:
 
 ```

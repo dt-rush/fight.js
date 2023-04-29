@@ -28,6 +28,22 @@ function formatRoundDisplay(round) {
   return roundDisplay;
 }
 
+function roundSpan(i, round, goldColor, emptySpace) {
+  const isGold = i + 1 === round || i < round;
+  const content = i + 1 === round ? `R${round}` : emptySpace;
+
+  return (
+    <span key={i} style={isGold ? goldColor : null}>
+      {content}
+    </span>
+  );
+}
+
+const roundDisplay = Array.from({ length: maxRound }, (v, i) =>
+  roundSpan(i, round, goldColor, emptySpace)
+);
+
+
 function Fight() {
   const { openModal } = useContext(ModalContext);
   const { uuid } = useParams();

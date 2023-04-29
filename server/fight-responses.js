@@ -1,4 +1,4 @@
-const { fights, fightsHidden, sockets } = require('./fight-store');
+const { fights, fightsHidden } = require('./fight-store');
 const { standingMoves, grapplingMoves, submissions, damageRate, blockSuccessRate } = require('./moves');
 const { assignRoundScores, stoppage, judgeDecision } = require('./victory.js');
 
@@ -210,7 +210,9 @@ function fightJoin(fightData, data, ws) {
 
   console.log(`${data.username} joins fight ${fightData.id}`);
 
-  sockets.set(data.username, ws);
+  const hiddenData = fightsHidden.get(fightData.id);
+  hiddenData.socketInstances[data.username] = data.instanceId;
+
   fightData.names.push(data.username);
   fightData.states[data.username] = {
     health: 20,
